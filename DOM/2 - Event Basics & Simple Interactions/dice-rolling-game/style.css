@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+
+  .hidden {
+    display: none;
+  }
+  .container {
+    border-radius: 16px;
+    box-shadow: 1px 2px 4px 1px;
+    padding: 16px;
+    display: flex;
+    height: 300px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    header {
+      display: flex;
+      align-items: center;
+      place-content: center;
+      .dice {
+        height: 48px;
+        width: 48px;
+        background-color: palegoldenrod;
+        border-radius: 8px;
+      }
+    }
+    #answer {
+      border: none;
+      border-bottom: 1px solid hsl(228, 43%, 59%);
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+
+      button {
+        background-color: hsl(228, 43%, 59%);
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 8px;
+      }
+    }
+  }
+}
