@@ -8,15 +8,17 @@
         padding: 16px;
         display: grid;
         background-color: black;
-        grid-template-columns: repeat(25, 25px);
+        grid-template-columns: repeat(40, 10px);
+        grid-template-rows: repeat(20, 10px);
         gap: 8px;
+        width: fit-content;
       }
 
       .square {
-        width: 25px;
-        height: 25px;
-        background-color: gray;
-        transition: background-color 1s ease-in-out;
+        width: 10px;
+        height: 10px;
+        background-color: lightgrey;
+        transition: background-color 1s ease;
       }
     </style>
   </head>
@@ -24,12 +26,7 @@
   <body>
     <!-- the entire body must be written by student -->
 
-    <section class="container">
-      <section class="square"></section>
-      <section class="square"></section>
-      <section class="square"></section>
-      <section class="square"></section>
-    </section>
+    <section class="container"></section>
     <script type="text/javascript" src="./script.js"></script>
   </body>
 </html>

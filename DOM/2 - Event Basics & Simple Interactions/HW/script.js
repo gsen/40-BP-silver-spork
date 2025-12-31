@@ -17,7 +17,7 @@ let innerHTML = "";
 //     })
 // }
 
-for (let index = 1; index <= 100; index++) {
+for (let index = 1; index <= 800; index++) {
     let square = document.createElement("section");
     square.classList.add("square");
     square.addEventListener("mouseenter", function name() {
@@ -31,7 +31,7 @@ for (let index = 1; index <= 100; index++) {
 }
 function resetColor(square) {
     setTimeout(() => {
-        square.style.backgroundColor = 'gray';
+        square.removeAttribute("style")
     }, 1000);
 }
 function setColor(square) {
