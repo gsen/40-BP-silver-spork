@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User registration form</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <script src="main.js"></script>
+    <form class="container">
+      <fieldset>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required />
+        <span class="error-message">Please fill username</span>
+      </fieldset>
+      <fieldset>
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName" required />
+        <span class="error-message">Please fill first name</span>
+      </fieldset>
+      <fieldset>
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName" required />
+        <span class="error-message">Please fill last name</span>
+      </fieldset>
+      <fieldset>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required pattern="[a-z0-9]{6,20}" />
+        <span class="error-message">Password should between 6-20 characters.</span>
+      </fieldset>
+
+      <!-- <p>abc</p> -->
+      <!-- <small>password should be between 6-20 characters.</small> -->
+      <button type="submit" disabled>Submit</button>
+      <!-- <button type="reset">Reset</button> -->
+    </form>
+  </body>
+</html>
