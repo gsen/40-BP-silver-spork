@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const addTodoButton = document.querySelector("#add-todo");
     const todosList = document.querySelector("#todos-list")
+
+    listenToTabChange();
+
     addTodoButton.addEventListener("click", function () {
 
         const newTodo = addTodoInputElement.value;
@@ -12,6 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
         todosList.append(todoItemElement);
         addTodoInputElement.value = ""
     })
+
+
 
     function createNewTodo(todoText) {
 
@@ -46,10 +51,46 @@ document.addEventListener("DOMContentLoaded", function () {
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
 
+        deleteButton.addEventListener("click", removeTodo)
+        deleteButton.dataset.todoId = listItem.id;
+
         listItem.append(todoCompletion, todoTextElement, deleteButton);
 
         return listItem;
 
     }
+
+    function removeTodo(event) {
+        let deleteButton = event.target;
+        const todoId = deleteButton.dataset.todoId;
+        const todoListItem = document.getElementById(todoId);
+        todoListItem.remove();
+    }
+
+
+    function tabChanged(event) {
+        const tab = event.target;
+        tab.classList.add("active");
+        updateTodoList(tab.dataset.value)
+    }
+
+    function updateTodoList(tabType) {
+        const todoItems = document.querySelectorAll(".todo-item")
+        if (tabType === "completed") {
+            for (let todoItem of todoItems) {
+                if (!todoItem.classList.contains("completed")) {
+                    todoItem.classList.add("hidden")
+                }
+            }
+        }
+    }
+
+    function listenToTabChange() {
+        let tabs = document.querySelectorAll(".tabs li.tab-item");
+        for (let tab of tabs) {
+            tab.addEventListener("click", tabChanged)
+        }
+    }
+
 
 })
