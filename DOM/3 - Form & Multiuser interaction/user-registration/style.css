@@ -14,12 +14,20 @@
     gap: 16px;
     border: none;
     flex-wrap: wrap;
-    input {
-      &[type="password"]:valid:focus,
-      &[type="password"]:valid:focus-visible {
-        outline: 2px solid lightgreen;
-        border: none;
+    section:has(input[type="password"]:invalid) + .error-message {
+      display: block;
+      color: red;
+    }
+    section:has(input[type="password"]:valid:is(:focus, :active, :focus-visible)) {
+      position: relative;
+      display: flex;
+      gap: 6px;
+      &::before {
+        content: "✔";
+        color: lightgreen;
       }
+    }
+    input {
       &:invalid {
         border: 1px solid red;
         border-radius: 2px;
