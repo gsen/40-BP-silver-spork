@@ -1,0 +1,46 @@
+.todos-container {
+  max-width: 400px;
+  border: 1px solid;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: auto;
+
+  .add-todos {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .todos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .tabs {
+      display: flex;
+      list-style: none;
+      gap: 8px;
+      justify-content: center;
+      .tab-item {
+        padding: 8px;
+        border: 1px solid;
+      }
+    }
+
+    #todos-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      list-style: none;
+
+      .todo-item {
+        display: flex;
+        gap: 8px;
+        justify-content: space-evenly;
+      }
+    }
+  }
+}
