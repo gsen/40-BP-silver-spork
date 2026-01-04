@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const todosList = document.querySelector("#todos-list")
 
     listenToTabChange();
+    updateStats();
 
     addTodoButton.addEventListener("click", function () {
 
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const todoItemElement = createNewTodo(newTodo);
         todosList.append(todoItemElement);
         addTodoInputElement.value = ""
+        updateStats();
     })
 
 
@@ -69,17 +71,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function tabChanged(event) {
+        clearActiveTabs();
         const tab = event.target;
         tab.classList.add("active");
         updateTodoList(tab.dataset.value)
     }
 
+    function clearActiveTabs() {
+        Array.from(document.querySelectorAll(".tabs .tab-item"))
+            .forEach(tab => tab.classList.remove("active"));
+    }
+
     function updateTodoList(tabType) {
         const todoItems = document.querySelectorAll(".todo-item")
+        for (let todo of todoItems) {
+            todo.classList.remove("hidden");
+        }
         if (tabType === "completed") {
             for (let todoItem of todoItems) {
                 if (!todoItem.classList.contains("completed")) {
                     todoItem.classList.add("hidden")
+                }
+            }
+        } else if (tabType === "todo") {
+            for (let todo of todoItems) {
+                if (todo.classList.contains("completed")) {
+                    todo.classList.add("hidden");
                 }
             }
         }
@@ -90,6 +107,15 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let tab of tabs) {
             tab.addEventListener("click", tabChanged)
         }
+    }
+
+    function updateStats() {
+        let items = document.querySelector("#todos-list");
+        let totalSpan = document.createElement("span");
+        totalSpan.textContent = items.children.length;
+
+        const totalStats = document.querySelector("#total");
+        totalStats.replaceChildren("Total: ", totalSpan);
     }
 
 

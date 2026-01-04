@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validation</title>
+  </head>
+  <body>
+    <form id="data">
+      <input type="text" required name="firstname" id="firstname" />
+      <input type="file" name="somefile" id="somefile" />
+      <button type="submit">Save</button>
+    </form>
+
+    <script>
+      let firstName = document.getElementById("firstname");
+      //   firstName.setCustomValidity("Please fill out first name");
+      //   firstName.addEventListener("input", function (event) {
+      //     let target = event.target;
+      //     if (!target.checkValidity()) {
+      //       target.setCustomValidity("Please fill out first name");
+      //     }
+      //   });
+      document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let formData = new FormData(event.target);
+
+        console.log(formData.get("somefile"));
+      });
+    </script>
+  </body>
+</html>

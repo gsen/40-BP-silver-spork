@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 300px;
+  margin: auto;
+  border: 1px solid;
+  border-radius: 8px;
+
+  fieldset {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border: none;
+    flex-wrap: wrap;
+    section:has(input[type="password"]:user-invalid) + .error-message {
+      display: block;
+      color: red;
+    }
+    section:has(input[type="password"]:user-valid:is(:focus, :active, :focus-visible)) {
+      position: relative;
+      display: flex;
+      gap: 6px;
+      &::before {
+        content: "✔";
+        color: lightgreen;
+      }
+    }
+    /* input {
+      &.dirty:invalid {
+        border: 1px solid red;
+        border-radius: 2px;
+
+        & + .error-message {
+          display: block;
+          color: red;
+        }
+      }
+    } */
+    input {
+      &:user-invalid {
+        border: 1px solid red;
+        border-radius: 2px;
+
+        & + .error-message {
+          display: block;
+          color: red;
+        }
+      }
+    }
+
+    .error-message {
+      display: none;
+      font-size: 0.8rem;
+    }
+  }
+}
