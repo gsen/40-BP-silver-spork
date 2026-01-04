@@ -1,0 +1,11 @@
+# Tree folder structure
+
+- Based on the object named files provided in main.js
+    - create a tree structure. 
+    - if a node contains children it's children should 
+        also be represented in a tree structure.
+    - by default all nodes should be collapsed.
+    - once you click on a parent node it should expand
+    - if parent node is expanded and you click on it, it should collapse.
+
+
