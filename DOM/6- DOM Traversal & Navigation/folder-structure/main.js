@@ -20,3 +20,42 @@ let files = {
         ]
     }]
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    function createTreeStructure(data) {
+        const treeNode = document.createElement("li");
+        treeNode.textContent = data.name;
+        if (data.children) {
+            const parentNode = document.createElement("ul");
+            parentNode.classList.add("hidden");
+
+            data.children.forEach(child => parentNode.append(createTreeStructure(child)))
+            const nodeStatusElement = document.createElement("span");
+            nodeStatusElement.textContent = "▷"
+            treeNode.prepend(nodeStatusElement);
+            treeNode.append(parentNode);
+
+            treeNode.addEventListener("click", function (event) {
+                event.stopPropagation();
+                if (parentNode.classList.contains("hidden")) {
+                    parentNode.classList.remove("hidden");
+                    treeNode.firstElementChild.textContent = "▽"
+                } else {
+                    parentNode.classList.add("hidden");
+                    treeNode.firstElementChild.textContent = "▷";
+                }
+            })
+        }
+        return treeNode;
+    }
+
+    const container = document.createElement("section");
+    container.id = "container";
+
+    const list = document.createElement("ul");
+    list.append(createTreeStructure(files));
+    container.append(list)
+
+    document.body.append(container);
+})

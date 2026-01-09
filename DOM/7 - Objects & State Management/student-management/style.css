@@ -1,0 +1,9 @@
+#list-container {
+  ul {
+    list-style: none;
+    li {
+      display: flex;
+      gap: 16px;
+    }
+  }
+}

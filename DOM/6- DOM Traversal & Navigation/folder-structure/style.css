@@ -1,0 +1,14 @@
+#container {
+  ul {
+    list-style: none;
+
+    li {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}
+
+.hidden {
+  display: none;
+}
