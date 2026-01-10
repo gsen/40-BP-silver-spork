@@ -77,8 +77,11 @@ document.addEventListener("DOMContentLoaded", function () {
         registerEvents() {
             console.log("register events called");
 
+            // in this case this will be the element on which the click event is raised
             // document.getElementById("increment").addEventListener("click", this.increment);
             this.incrementButton.addEventListener("click", () => {
+                // in case of arrow functions this is not passed implicitly
+                // so here this will be the object counter object itself.
                 this.increment();
             });
             this.decrementButton.addEventListener("click", () => {
