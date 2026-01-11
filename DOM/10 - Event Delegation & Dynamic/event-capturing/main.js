@@ -1,3 +1,7 @@
+// by default events are bubbled up 
+// if you want to change this behaviour you can set the capture flag to true
+// in that case event listeners will be called as they are captured
+
 document.addEventListener("click", () => {
     console.log("document clicked");
 }, { capture: true })

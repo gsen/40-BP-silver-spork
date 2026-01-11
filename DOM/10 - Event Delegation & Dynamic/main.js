@@ -1,3 +1,14 @@
+// Event delegation
+// we delegate the work of listening to events to a single element 
+// typically a parent element.
+
+// Event delegation pattern - advantages
+
+// 1. Peformance is enhanced
+// 2. dynamic content is handled
+// 3. clearner code as all logic related to handling is in a single place
+// 4. memory efficient since we register a single event listener
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // <ul id="item-list">
@@ -10,9 +21,11 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(event.target);
 
         if (event.target.closest("button")) {
-            console.log("delete button clicked");
+            event.target.closest(".item").remove();
+
         } else if (event.target.matches("input[type='checkbox']")) {
-            console.log("checkbox clicked");
+            event.target.closest(".item").classList.toggle("completed");
+
         } else if (event.target.closest("label")) {
             console.log("label clicked");
         }
