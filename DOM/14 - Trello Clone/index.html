@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <script src="main.js"></script>
     <header id="header">
       <nav>
-        <ul>
-          <li><p>Board Name</p></li>
-        </ul>
+        <ul id="boards-container"></ul>
+        <li>
+          <button id="btn-new-board">New Board</button>
+        </li>
       </nav>
     </header>
     <main class="list-container">
@@ -42,7 +44,7 @@
           <button>Add Card</button>
         </footer>
       </section>
-      <section class="list" id="list1">
+      <section class="list" id="list3">
         <header>
           <h2>List Name</h2>
         </header>
@@ -55,7 +57,11 @@
           <button>Add Card</button>
         </footer>
       </section>
+
+      <section>
+        <button>New List</button>
+      </section>
     </main>
-    <footer></footer>
+    <footer id="footer"></footer>
   </body>
 </html>
