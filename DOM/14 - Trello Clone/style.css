@@ -1,0 +1,52 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+
+  #header {
+    padding: 16px 8px;
+    nav {
+      ul {
+        list-style: none;
+        display: flex;
+
+        li {
+          p {
+            padding: 16px;
+            border: 1px solid;
+          }
+        }
+      }
+    }
+  }
+
+  main.list-container {
+    display: flex;
+    gap: 16px;
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid;
+
+      .list-items {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .item {
+          padding: 8px 16px;
+        }
+      }
+    }
+  }
+}
