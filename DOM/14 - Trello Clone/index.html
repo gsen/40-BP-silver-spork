@@ -43,6 +43,32 @@
           <button>Add Card</button>
         </footer>
       </section> -->
+
+      <article id="new-card-dialog" class="hidden">
+        <header>
+          <h1>Enter details</h1>
+        </header>
+
+        <form id="new-card-form">
+          <fieldset>
+            <label for="title">Title</label>
+            <input required type="text" name="title" id="card-title" />
+          </fieldset>
+          <fieldset>
+            <label for="description">Description</label>
+            <textarea name="description" id="card-description"></textarea>
+          </fieldset>
+          <fieldset>
+            <label for="due-date">Due</label>
+            <input type="date" name="due-date" id="card-due-date" />
+          </fieldset>
+
+          <footer>
+            <button type="reset">Cancel</button>
+            <button type="submit">Save</button>
+          </footer>
+        </form>
+      </article>
     </main>
     <footer id="footer"></footer>
   </body>

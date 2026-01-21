@@ -42,7 +42,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    class Card {
+        constructor(name, dueDate, description) {
+            this.name = name;
+            this.dueDate = dueDate;
+            this.description = description;
+            this.id = crypto.randomUUID();
+        }
+
+        createCardElement() {
+
+            const card = document.createElement("article");
+            card.id = this.id;
+            card.classList.add("card");
+
+            const cardHeader = document.createElement("header");
+            cardHeader.classList.add("card-header");
+            cardHeader.textContent = this.name;
+
+            const cardBody = document.createElement("section");
+            cardBody.classList.add("card-body");
+
+            const cardDescription = document.createElement("p");
+            cardDescription.textContent = this.description;
+            cardDescription.classList.add("card-description");
+
+            const cardDueDate = document.createElement("p");
+            cardDueDate.textContent = this.dueDate;
+            cardDueDate.classList.add("card-due-date");
+
+            cardBody.append(cardDescription, cardDueDate);
+
+            card.append(cardHeader, cardBody)
+
+            return card;
+
+        }
+    }
+
     class List {
+        #listElement;
         constructor(name) {
             this.name = name;
             this.id = crypto.randomUUID();
@@ -88,10 +127,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
             list.append(header, listItemsContainer, footer);
             document.querySelector(".list-container").append(list);
+            this.#listElement = list;
         }
 
         addNewCard() {
-            console.log("add new card called", this);
+            const cardDialog = document.querySelector("#new-card-dialog");
+            cardDialog.classList.remove("hidden");
+
+
+
+            const cardForm = document.querySelector("#new-card-form");
+            cardForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                const title = formData.get("title");
+                const description = formData.get("description");
+                const dueDate = formData.get("due-date");
+
+                const newCard = new Card(title, dueDate, description);
+                this.cards.push(newCard);
+                this.renderCard(newCard);
+
+                form.reset()
+
+
+            })
+
+            cardForm.addEventListener("reset", (event) => {
+                cardDialog.classList.add("hidden");
+            })
+
+        }
+
+        renderCard(newCard) {
+            const newCardElement = newCard.createCardElement();
+            const cardsListContainer = this.#listElement.querySelector(".list-items");
+
+            const listItem = document.createElement("li");
+            listItem.append(newCardElement);
+
+            cardsListContainer.append(listItem);
 
         }
     }
