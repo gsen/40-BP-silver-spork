@@ -1,5 +1,49 @@
 
 document.addEventListener("DOMContentLoaded", () => {
+    const STORAGE_KEYS = {
+        todoApp: "todo-app"
+    }
+    class Storage {
+
+        save(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        get(key) {
+            const data = localStorage.getItem(key);
+            if (data) {
+                return JSON.parse(data);
+            } else { return null; }
+        }
+
+    }
+
+
+    const storage = new Storage();
+
+    let app;
+
+    function loadAppFromStorage() {
+
+        const existingApp = storage.get(STORAGE_KEYS.todoApp);
+        if (existingApp?.boards.length) {
+
+
+            // load existing board
+            let selectedBoard = existingApp.boards[0];
+            // render selectedBoard;
+        } else {
+            app = {
+                boards: []
+            }
+        }
+
+    }
+
+
+    loadAppFromStorage();
+
+
 
 
 
@@ -8,27 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveCard: "save-card"
     }
 
-    const app = {
-        boards: []
-        // boards: [
 
-        //     //     {
-        //     //     id: "board-id",
-        //     //     name: "board-name",
-        //     //     lists: [{
-        //     //         id,
-        //     //         title,
-        //     //         cards: [{
-        //     //             name,
-        //     //             id,
-        //     //             description,
-        //     //             dueDate
-        //     //         }]
-        //     //     }]
-        //     // }
-
-        // ]
-    }
     const addBoardButton = document.getElementById("btn-new-board");
 
 
@@ -42,9 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function createNewBoard(boardName) {
+        if (boardName) {
+            let board = new Board(boardName);
+            app.boards.push(board)
+            storage.save(STORAGE_KEYS.todoApp, app)
+        } else {
+            alert("You need to enter board name")
+        }
 
-        let board = new Board(boardName);
-        app.boards.push(board)
 
     }
 
@@ -93,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cardForm.addEventListener("reset", (event) => {
         cardDialog.classList.add("hidden");
     })
+
 
 
     class Card {
@@ -213,6 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderCard({ title, description, dueDate }) {
             let newCard = new Card(title, dueDate, description);
+            this.cards.push(newCard);
             const newCardElement = newCard.createCardElement();
             const cardsListContainer = this.#listElement.querySelector(".list-items");
 
@@ -263,9 +294,10 @@ document.addEventListener("DOMContentLoaded", () => {
         addNewList() {
             console.log("add new list called", this)
             const listName = prompt("Enter list name");
-
-            const newList = new List(listName);
-            this.lists.push(newList);
+            if (listName) {
+                const newList = new List(listName);
+                this.lists.push(newList);
+            }
 
         }
     }
