@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         boards;
         constructor() {
             this.boards = [];
-            this.eventBus = EventBus.getInstance()
+
             this.registerEvents();
         }
 
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         registerEvents() {
-            this.eventBus.addEventListener(CUSTOM_EVENTS.saveToStorage, this.save.bind(this))
+            EventBus.getInstance().addEventListener(CUSTOM_EVENTS.saveToStorage, this.save.bind(this))
         }
 
         static getTodoApp() {
@@ -264,6 +264,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (listName) {
                 const newList = new List(listName);
                 this.lists.push(newList);
+                // let app = store.get()
+                // let index = app.boards.findIndex(board => board.id === this.id)
+                // app.boards[index] = this;
+                // store.save(app)
                 EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage))
 
             }
