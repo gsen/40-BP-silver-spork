@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+    const CUSTOM_EVENTS = {
+        openNewCardDialog: "open-new-card-dialog",
+        saveCard: "save-card"
+    }
 
     const app = {
         boards: []
@@ -26,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // ]
     }
     const addBoardButton = document.getElementById("btn-new-board");
-    const addListButton = document.getElementById
+
 
     addBoardButton.addEventListener("click", function () {
         let boardName = prompt("Enter the board name");
@@ -35,12 +39,61 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
 
+
+
     function createNewBoard(boardName) {
 
         let board = new Board(boardName);
         app.boards.push(board)
 
     }
+
+
+    const cardDialog = document.querySelector("#new-card-dialog");
+
+    const cardForm = document.querySelector("#new-card-form");
+    cardDialog.addEventListener(CUSTOM_EVENTS.openNewCardDialog, (event) => {
+
+        const { target: dialog, detail } = event;
+
+        dialog.classList.remove("hidden");
+        let form = dialog.querySelector("form");
+        form.dataset.listId = detail.listId;
+
+    });
+    cardForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const title = formData.get("title");
+        const description = formData.get("description");
+        const dueDate = formData.get("due-date");
+        const listId = document.getElementById(form.dataset.listId);
+
+
+        // const newCard = new Card(title, dueDate, description);
+        // this.cards.push(newCard);
+        // this.renderCard(newCard);
+
+        const addCardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, {
+            detail: {
+                title, description, dueDate
+            }
+        });
+
+        listId.dispatchEvent(addCardEvent);
+        form.dataset.listId = "";
+
+        form.reset()
+
+
+    })
+
+    cardForm.addEventListener("reset", (event) => {
+        cardDialog.classList.add("hidden");
+    })
+
 
     class Card {
         constructor(name, dueDate, description) {
@@ -79,6 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
     }
+
+
 
     class List {
         #listElement;
@@ -128,39 +183,36 @@ document.addEventListener("DOMContentLoaded", () => {
             list.append(header, listItemsContainer, footer);
             document.querySelector(".list-container").append(list);
             this.#listElement = list;
+
+            this.#listElement.addEventListener(CUSTOM_EVENTS.saveCard, this.handleNewCard.bind(this))
+            // listItemsContainer.addEventListener('custom-event', this.handleNewCard.bind(this))
         }
 
         addNewCard() {
+
+            const customEvent = new CustomEvent(CUSTOM_EVENTS.openNewCardDialog, {
+                bubbles: true,
+                cancelable: true,
+                detail: {
+                    listId: this.id,
+                }
+            })
+
             const cardDialog = document.querySelector("#new-card-dialog");
-            cardDialog.classList.remove("hidden");
+            cardDialog.dispatchEvent(customEvent);
 
 
-
-            const cardForm = document.querySelector("#new-card-form");
-            cardForm.addEventListener("submit", (event) => {
-                event.preventDefault();
-                const form = event.target;
-                const formData = new FormData(form);
-                const title = formData.get("title");
-                const description = formData.get("description");
-                const dueDate = formData.get("due-date");
-
-                const newCard = new Card(title, dueDate, description);
-                this.cards.push(newCard);
-                this.renderCard(newCard);
-
-                form.reset()
-
-
-            })
-
-            cardForm.addEventListener("reset", (event) => {
-                cardDialog.classList.add("hidden");
-            })
 
         }
 
-        renderCard(newCard) {
+        handleNewCard(event) {
+
+            // Array.from(event.target.children).forEach(child => child.dispatchEvent(new CustomEvent('custom-event', { detail: { ...event.detail } })))
+            this.renderCard(event.detail)
+        }
+
+        renderCard({ title, description, dueDate }) {
+            let newCard = new Card(title, dueDate, description);
             const newCardElement = newCard.createCardElement();
             const cardsListContainer = this.#listElement.querySelector(".list-items");
 
@@ -168,7 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
             listItem.append(newCardElement);
 
             cardsListContainer.append(listItem);
-
         }
     }
 
