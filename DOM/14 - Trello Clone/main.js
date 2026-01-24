@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
         todoApp: "todo-app"
     }
 
+
+    const CUSTOM_EVENTS = {
+        openNewCardDialog: "open-new-card-dialog",
+        saveCard: "save-card",
+        saveToStorage: "save-to-storage"
+    }
+
     class Store {
         constructor(storageKey) {
             this.key = storageKey;
@@ -25,10 +32,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const store = new Store(STORAGE_KEYS.todoApp);
 
 
+    // const eventTarget = new EventTarget()
+    // eventTarget.addEventListener()
+    // eventTarget.dispatchEvent()
+
+    class EventBus extends EventTarget {
+        static instance;
+        // singleton pattern
+        static getInstance() {
+            if (!EventBus.instance) {
+                EventBus.instance = new EventBus();
+            }
+            return EventBus.instance;
+        }
+
+
+    }
+
+
+
+
     class TodoApp {
         boards;
         constructor() {
             this.boards = [];
+            this.eventBus = EventBus.getInstance()
+            this.registerEvents();
+        }
+
+
+
+        addBoard(board) {
+            this.boards.push(board);
+            this.save();
+        }
+
+        save() {
+            store.save(this);
+        }
+
+        registerEvents() {
+            this.eventBus.addEventListener(CUSTOM_EVENTS.saveToStorage, this.save.bind(this))
         }
 
         static getTodoApp() {
@@ -45,15 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
             return app;
-        }
-
-        addBoard(board) {
-            this.boards.push(board);
-            this.save();
-        }
-
-        save() {
-            store.save(this);
         }
 
     }
@@ -101,10 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     class List {
         #listElement;
-        constructor(name) {
+        constructor(name, id = crypto.randomUUID(), cards = []) {
             this.name = name;
-            this.id = crypto.randomUUID();
-            this.cards = [];
+            this.id = id;
+            this.cards = cards;
             this.render();
         }
 
@@ -178,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCard({ title, description, dueDate }) {
             let newCard = new Card(title, dueDate, description);
             this.cards.push(newCard);
+
             const newCardElement = newCard.createCardElement();
             const cardsListContainer = this.#listElement.querySelector(".list-items");
 
@@ -189,9 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     class Board {
-        constructor(name, id = crypto.randomUUID()) {
+        constructor(name, id = crypto.randomUUID(), lists = []) {
             this.name = name;
-            this.lists = [];
+            this.lists = lists;
             this.id = id;
         }
 
@@ -228,22 +264,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (listName) {
                 const newList = new List(listName);
                 this.lists.push(newList);
+                EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage))
+
             }
 
         }
     }
 
-
-
     let app = TodoApp.getTodoApp();
-
-
-    const CUSTOM_EVENTS = {
-        openNewCardDialog: "open-new-card-dialog",
-        saveCard: "save-card"
-    }
-
-
     const addBoardButton = document.getElementById("btn-new-board");
 
 
