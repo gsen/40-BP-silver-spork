@@ -3,14 +3,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const STORAGE_KEYS = {
         todoApp: "todo-app"
     }
-    class Storage {
 
-        save(key, data) {
-            localStorage.setItem(key, JSON.stringify(data));
+    class Store {
+        constructor(storageKey) {
+            this.key = storageKey;
         }
 
-        get(key) {
-            const data = localStorage.getItem(key);
+        save(data) {
+            localStorage.setItem(this.key, JSON.stringify(data));
+        }
+
+        get() {
+            const data = localStorage.getItem(this.key);
             if (data) {
                 return JSON.parse(data);
             } else { return null; }
@@ -18,111 +22,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    const storage = new Storage();
-
-    let app;
-
-    function loadAppFromStorage() {
-
-        const existingApp = storage.get(STORAGE_KEYS.todoApp);
-        if (existingApp?.boards.length) {
+    const store = new Store(STORAGE_KEYS.todoApp);
 
 
-            // load existing board
-            let selectedBoard = existingApp.boards[0];
-            // render selectedBoard;
-        } else {
-            app = {
-                boards: []
+    class TodoApp {
+        boards;
+        constructor() {
+            this.boards = [];
+        }
+
+        static getTodoApp() {
+            const existingApp = store.get();
+            let app = new TodoApp();
+            if (existingApp?.boards.length) {
+                for (let board of existingApp.boards) {
+                    let boardObj = new Board(board.name, board.id);
+                    boardObj.render();
+                    app.addBoard(boardObj);
+                }
+
+                app.boards[0].renderAddListButton();
+
             }
+            return app;
+        }
+
+        addBoard(board) {
+            this.boards.push(board);
+            this.save();
+        }
+
+        save() {
+            store.save(this);
         }
 
     }
-
-
-    loadAppFromStorage();
-
-
-
-
-
-    const CUSTOM_EVENTS = {
-        openNewCardDialog: "open-new-card-dialog",
-        saveCard: "save-card"
-    }
-
-
-    const addBoardButton = document.getElementById("btn-new-board");
-
-
-    addBoardButton.addEventListener("click", function () {
-        let boardName = prompt("Enter the board name");
-        createNewBoard(boardName);
-
-    })
-
-
-
-
-    function createNewBoard(boardName) {
-        if (boardName) {
-            let board = new Board(boardName);
-            app.boards.push(board)
-            storage.save(STORAGE_KEYS.todoApp, app)
-        } else {
-            alert("You need to enter board name")
-        }
-
-
-    }
-
-
-    const cardDialog = document.querySelector("#new-card-dialog");
-
-    const cardForm = document.querySelector("#new-card-form");
-    cardDialog.addEventListener(CUSTOM_EVENTS.openNewCardDialog, (event) => {
-
-        const { target: dialog, detail } = event;
-
-        dialog.classList.remove("hidden");
-        let form = dialog.querySelector("form");
-        form.dataset.listId = detail.listId;
-
-    });
-    cardForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-
-        const title = formData.get("title");
-        const description = formData.get("description");
-        const dueDate = formData.get("due-date");
-        const listId = document.getElementById(form.dataset.listId);
-
-
-        // const newCard = new Card(title, dueDate, description);
-        // this.cards.push(newCard);
-        // this.renderCard(newCard);
-
-        const addCardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, {
-            detail: {
-                title, description, dueDate
-            }
-        });
-
-        listId.dispatchEvent(addCardEvent);
-        form.dataset.listId = "";
-
-        form.reset()
-
-
-    })
-
-    cardForm.addEventListener("reset", (event) => {
-        cardDialog.classList.add("hidden");
-    })
-
 
 
     class Card {
@@ -255,11 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     class Board {
-        constructor(name) {
+        constructor(name, id = crypto.randomUUID()) {
             this.name = name;
             this.lists = [];
-            this.id = crypto.randomUUID();
-            this.render();
+            this.id = id;
         }
 
         render() {
@@ -270,8 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
             boardItem.textContent = this.name;
 
             boardsContainer.append(boardItem);
-
-            this.renderAddListButton();
 
         }
 
@@ -301,6 +232,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
     }
+
+
+
+    let app = TodoApp.getTodoApp();
+
+
+    const CUSTOM_EVENTS = {
+        openNewCardDialog: "open-new-card-dialog",
+        saveCard: "save-card"
+    }
+
+
+    const addBoardButton = document.getElementById("btn-new-board");
+
+
+    addBoardButton.addEventListener("click", function () {
+        let boardName = prompt("Enter the board name");
+        createNewBoard(boardName);
+
+    })
+
+
+
+
+    function createNewBoard(boardName) {
+        if (boardName) {
+            let board = new Board(boardName);
+            app.addBoard(board);
+
+        } else {
+            alert("You need to enter board name")
+        }
+
+
+    }
+
+
+    const cardDialog = document.querySelector("#new-card-dialog");
+
+    const cardForm = document.querySelector("#new-card-form");
+    cardDialog.addEventListener(CUSTOM_EVENTS.openNewCardDialog, (event) => {
+
+        const { target: dialog, detail } = event;
+
+        dialog.classList.remove("hidden");
+        let form = dialog.querySelector("form");
+        form.dataset.listId = detail.listId;
+
+    });
+    cardForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const title = formData.get("title");
+        const description = formData.get("description");
+        const dueDate = formData.get("due-date");
+        const listId = document.getElementById(form.dataset.listId);
+
+
+        // const newCard = new Card(title, dueDate, description);
+        // this.cards.push(newCard);
+        // this.renderCard(newCard);
+
+        const addCardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, {
+            detail: {
+                title, description, dueDate
+            }
+        });
+
+        listId.dispatchEvent(addCardEvent);
+        form.dataset.listId = "";
+
+        form.reset()
+
+
+    })
+
+    cardForm.addEventListener("reset", (event) => {
+        cardDialog.classList.add("hidden");
+    })
+
+
 
 
 
