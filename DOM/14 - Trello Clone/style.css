@@ -62,9 +62,17 @@ body {
       border-radius: 8px;
       gap: 8px;
       .card-header {
+        position: relative;
         border-bottom: 1px solid;
         padding: 8px 16px;
         text-align: center;
+        .delete-card-btn {
+          position: absolute;
+          right: 8px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
       }
       .card-body {
         padding: 8px 16px;

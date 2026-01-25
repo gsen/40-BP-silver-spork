@@ -127,6 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
             cardHeader.classList.add("card-header");
             cardHeader.textContent = this.name;
 
+            const deleteCard = document.createElement("span");
+            deleteCard.classList.add("delete-card-btn");
+            deleteCard.textContent = "X"
+            cardHeader.append(deleteCard);
+
             const cardBody = document.createElement("section");
             cardBody.classList.add("card-body");
 
@@ -186,7 +191,22 @@ document.addEventListener("DOMContentLoaded", () => {
             this.#listElement = list;
 
             this.#listElement.addEventListener(CUSTOM_EVENTS.saveCard, this.handleNewCard.bind(this))
+            this.#listElement.addEventListener("click", this.handleClick.bind(this))
             // listItemsContainer.addEventListener('custom-event', this.handleNewCard.bind(this))
+        }
+
+        handleClick(event) {
+            if (event.target.closest(".card")) {
+                // delete for card needs to handled
+                // remove from ui
+                const cardToDelete = event.target.closest(".card");
+                console.log(cardToDelete.id);
+                cardToDelete.parentElement.remove();
+                // remove from app object
+                this.cards = this.cards.filter(card => card.id !== cardToDelete.id);
+                // update in local storage
+                this.syncToStore();
+            }
         }
 
         addNewCard() {
@@ -216,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let newCard = new Card(name, dueDate, description, id);
             this.cards.push(newCard);
             if (saveToStorage) {
-                EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage));
+                this.syncToStore();
             }
 
             const newCardElement = newCard.createCardElement();
@@ -226,6 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
             listItem.append(newCardElement);
 
             cardsListContainer.append(listItem);
+        }
+
+        syncToStore() {
+            EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage));
         }
     }
 
