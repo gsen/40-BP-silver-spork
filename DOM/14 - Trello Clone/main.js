@@ -60,8 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
             this.registerEvents();
         }
 
-
-
         addBoard(board) {
             this.boards.push(board);
             this.save();
@@ -79,13 +77,30 @@ document.addEventListener("DOMContentLoaded", () => {
             const existingApp = store.get();
             let app = new TodoApp();
             if (existingApp?.boards.length) {
+                let index = 0;
                 for (let board of existingApp.boards) {
                     let boardObj = new Board(board.name, board.id);
                     boardObj.render();
+                    if (index === 0) {
+                        boardObj.renderAddListButton();
+                    }
+                    if (board.lists.length) {
+                        for (let list of board.lists) {
+                            const listObject = new List(list.name, list.id)
+
+                            if (list.cards.length) {
+                                for (let card of list.cards) {
+                                    listObject.renderCard(card, false);
+                                }
+                            }
+
+                            boardObj.lists.push(listObject);
+                        }
+                    }
                     app.addBoard(boardObj);
                 }
 
-                app.boards[0].renderAddListButton();
+                // app.boards[0].renderAddListButton();
 
             }
             return app;
@@ -95,11 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     class Card {
-        constructor(name, dueDate, description) {
+        constructor(name, dueDate, description, id = crypto.randomUUID()) {
             this.name = name;
             this.dueDate = dueDate;
             this.description = description;
-            this.id = crypto.randomUUID();
+            this.id = id;
         }
 
         createCardElement() {
@@ -144,19 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         render() {
-            // <section class="list" id="list1">
-            //     <header>
-            //         <h2>List Name</h2>
-            //     </header>
-            //     <ul class="list-items">
-            //         <li class="item">card content</li>
-            //         <li class="item">card content</li>
-            //         <li class="item">card content</li>
-            //     </ul>
-            //     <footer>
-            //         <button>Add Card</button>
-            //     </footer>
-            // </section>
 
             const list = document.createElement("section");
             list.classList.add("list");
@@ -210,9 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
             this.renderCard(event.detail)
         }
 
-        renderCard({ title, description, dueDate }) {
-            let newCard = new Card(title, dueDate, description);
+        renderCard({ name, description, dueDate, id }, saveToStorage = true) {
+            let newCard = new Card(name, dueDate, description, id);
             this.cards.push(newCard);
+            if (saveToStorage) {
+                EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage));
+            }
 
             const newCardElement = newCard.createCardElement();
             const cardsListContainer = this.#listElement.querySelector(".list-items");
@@ -291,6 +296,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function createNewBoard(boardName) {
         if (boardName) {
             let board = new Board(boardName);
+            board.render();
+            board.renderAddListButton();
             app.addBoard(board);
 
         } else {
@@ -318,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const form = event.target;
         const formData = new FormData(form);
 
-        const title = formData.get("title");
+        const name = formData.get("title");
         const description = formData.get("description");
         const dueDate = formData.get("due-date");
         const listId = document.getElementById(form.dataset.listId);
@@ -330,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const addCardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, {
             detail: {
-                title, description, dueDate
+                name, description, dueDate
             }
         });
 
