@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const CUSTOM_EVENTS = {
         openNewCardDialog: "open-new-card-dialog",
         saveCard: "save-card",
-        saveToStorage: "save-to-storage"
+        saveToStorage: "save-to-storage",
+        deleteList: "delete-list"
     }
 
     class Store {
@@ -170,10 +171,16 @@ document.addEventListener("DOMContentLoaded", () => {
             list.id = this.id;
 
             const header = document.createElement("header");
+            header.classList.add("list-header")
             const title = document.createElement("h2");
             title.textContent = this.name;
 
-            header.append(title);
+            const deleteListButton = document.createElement("span")
+            deleteListButton.classList.add("delete-list-btn");
+            deleteListButton.textContent = "X";
+
+
+            header.append(title, deleteListButton);
 
             const listItemsContainer = document.createElement("ul");
             listItemsContainer.classList.add("list-items");
@@ -196,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         handleClick(event) {
-            if (event.target.closest(".card")) {
+            if (event.target.closest(".delete-card-btn")) {
                 // delete for card needs to handled
                 // remove from ui
                 const cardToDelete = event.target.closest(".card");
@@ -206,6 +213,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.cards = this.cards.filter(card => card.id !== cardToDelete.id);
                 // update in local storage
                 this.syncToStore();
+            } else if (event.target.closest(".delete-list-btn")) {
+                // logic to remove list
+                console.log("need to remove list")
+                const listElement = event.target.closest(".list");
+                listElement.remove();
+
+                EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.deleteList, {
+                    detail: {
+                        listId: listElement.id
+                    }
+                }))
+
+
             }
         }
 
@@ -258,6 +278,18 @@ document.addEventListener("DOMContentLoaded", () => {
             this.name = name;
             this.lists = lists;
             this.id = id;
+            this.registerListeners();
+
+        }
+
+        registerListeners() {
+            EventBus.getInstance().addEventListener(CUSTOM_EVENTS.deleteList, this.removeListFromBoard.bind(this))
+        }
+
+        removeListFromBoard(event) {
+            const { listId } = event.detail;
+            this.lists = this.lists.filter(list => list.id !== listId);
+            EventBus.getInstance().dispatchEvent(new CustomEvent(CUSTOM_EVENTS.saveToStorage));
         }
 
         render() {

@@ -42,6 +42,20 @@ body {
       border: 1px solid;
       border-radius: 8px;
 
+      .list-header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .delete-list-btn {
+          color: palevioletred;
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          cursor: pointer;
+        }
+      }
+
       .list-items {
         list-style: none;
         padding: 0;
@@ -67,6 +81,7 @@ body {
         padding: 8px 16px;
         text-align: center;
         .delete-card-btn {
+          color: palevioletred;
           position: absolute;
           right: 8px;
           &:hover {
@@ -86,7 +101,7 @@ body {
   #new-card-dialog {
     position: absolute;
     min-width: calc(100vw / 50);
-    /* z-index: 1; */
+    z-index: 1;
     background-color: beige;
     display: flex;
     gap: 16px;
