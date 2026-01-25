@@ -47,6 +47,13 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
+        .list-edit-btn {
+          position: absolute;
+          top: -8px;
+          right: 16px;
+          cursor: pointer;
+          color: green;
+        }
         .delete-list-btn {
           color: palevioletred;
           position: absolute;
