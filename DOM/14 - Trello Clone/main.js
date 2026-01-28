@@ -472,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
         targetList.classList.remove("dropable")
 
         if (targetList.id !== sourceList.id) {
-            cardElement.remove();
+            cardElement.parentElement.remove();
 
             const sourceListObj = app.boards[app.selectedBoardIndex].lists.find(list => list.id === sourceList.id);
             const cardIndex = sourceListObj.cards.findIndex(card => card.id === cardId);
