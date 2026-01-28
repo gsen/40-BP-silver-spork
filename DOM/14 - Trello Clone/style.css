@@ -13,13 +13,19 @@ body {
     padding: 16px 8px;
     background: royalblue;
     color: #fff;
-    nav {
-      ul {
+    .nav {
+      display: flex;
+      gap: 16px;
+      ul#boards-container {
         list-style: none;
         display: flex;
         gap: 16px;
         align-items: center;
-        li {
+        li.board {
+          &:is(:hover, .active) {
+            background-color: rgba(0, 0, 0, 0.4);
+          }
+          cursor: pointer;
           p {
             padding: 16px;
             border: 1px solid;
@@ -41,6 +47,10 @@ body {
       padding: 16px;
       border: 1px solid;
       border-radius: 8px;
+
+      &.dropable {
+        background: rgba(0, 0, 0, 0.5);
+      }
 
       .list-header {
         position: relative;

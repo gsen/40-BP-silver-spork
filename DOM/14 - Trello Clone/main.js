@@ -60,15 +60,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     class TodoApp {
         boards;
+        selectedBoardIndex;
         constructor() {
             this.boards = [];
+            this.selectedBoardIndex = 0;
 
             this.registerEvents();
         }
 
-        addBoard(board) {
+        addBoard(board, syncToStore = true) {
             this.boards.push(board);
-            this.save();
+            if (syncToStore) {
+                this.save();
+            }
         }
 
         save() {
@@ -77,36 +81,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
         registerEvents() {
             EventBus.getInstance().addEventListener(CUSTOM_EVENTS.saveToStorage, this.save.bind(this))
+            document.querySelector("#boards-container").addEventListener("click", this.handleClick.bind(this))
         }
+
+        handleClick(event) {
+
+            if (event.target.closest(".board")) {
+                const selectedBoard = event.target.closest(".board");
+                console.log("board selected", selectedBoard.id)
+
+                const clickedBoardIndex = this.boards.findIndex(board => board.id === selectedBoard.id)
+                this.selectedBoardIndex = clickedBoardIndex;
+                this.save(); // sync to local storage
+
+                this.loadBoard(this.boards[this.selectedBoardIndex])
+
+            }
+
+        }
+
+        loadDefaultBoard() {
+            this.loadBoard(this.boards[this.selectedBoardIndex]);
+        }
+
+        loadBoard(board) {
+            document.querySelectorAll(".list-container > .list")?.forEach(list => list.remove());
+            document.querySelector(".new-list-section")?.remove();
+            board.renderAddListButton();
+            document.querySelector(".board.active")?.classList.toggle("active");
+            document.getElementById(board.id).classList.add("active");
+            for (let list of board.lists) {
+                list.render();
+                for (let card of list.cards) {
+                    list.renderCard(card)
+                }
+            }
+
+        }
+
+
 
         static getTodoApp() {
             const existingApp = store.get();
             let app = new TodoApp();
+            app.selectedBoardIndex = existingApp.selectedBoardIndex ?? 0;
             if (existingApp?.boards.length) {
                 let index = 0;
                 for (let board of existingApp.boards) {
                     let boardObj = new Board(board.name, board.id);
                     boardObj.render();
-                    if (index === 0) {
-                        boardObj.renderAddListButton();
-                    }
                     if (board.lists.length) {
                         for (let list of board.lists) {
                             const listObject = new List(list.name, list.id)
 
                             if (list.cards.length) {
                                 for (let card of list.cards) {
-                                    listObject.renderCard(card, false);
+                                    listObject.addCard(card)
                                 }
                             }
 
                             boardObj.lists.push(listObject);
                         }
                     }
-                    app.addBoard(boardObj);
+                    app.addBoard(boardObj, false);
+                    index++;
                 }
 
-                // app.boards[0].renderAddListButton();
 
             }
             return app;
@@ -128,6 +168,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("article");
             card.id = this.id;
             card.classList.add("card");
+
+            card.setAttribute("draggable", true);
 
             const cardHeader = document.createElement("header");
             cardHeader.classList.add("card-header");
@@ -171,7 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
             this.name = name;
             this.id = id;
             this.cards = cards;
-            this.render();
         }
 
         render() {
@@ -287,15 +328,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         handleCardSave(event) {
-
-
-
             // Array.from(event.target.children).forEach(child => child.dispatchEvent(new CustomEvent('custom-event', { detail: { ...event.detail } })))
             if (event.detail.mode === "edit") {
                 this.reRenderCard(event.detail)
             } else {
-                this.renderCard(event.detail)
+                const newCard = this.addCard(event.detail);
+                this.renderCard(newCard)
             }
+            this.syncToStore();
         }
 
         reRenderCard({ name, description, dueDate, id }) {
@@ -311,19 +351,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             existingCardParent.replaceChildren(updatedCardElement);
 
-            this.syncToStore();
 
         }
 
-
-        renderCard({ name, description, dueDate, id }, saveToStorage = true) {
+        addCard({ name, description, dueDate, id }) {
             let newCard = new Card(name, dueDate, description, id);
             this.cards.push(newCard);
-            if (saveToStorage) {
-                this.syncToStore();
-            }
+            return newCard;
+        }
 
-            const newCardElement = newCard.createCardElement();
+        renderCard(card) {
+
+            const newCardElement = card.createCardElement();
             const cardsListContainer = this.#listElement.querySelector(".list-items");
 
             const listItem = document.createElement("li");
@@ -362,6 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const boardItem = document.createElement("li");
             boardItem.id = this.id;
             boardItem.textContent = this.name;
+            boardItem.classList.add("board");
 
             boardsContainer.append(boardItem);
 
@@ -370,10 +410,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         renderAddListButton() {
-            // <section>
-            //     <button>New List</button>
-            // </section>
             const section = document.createElement("section");
+            section.classList.add("new-list-section")
             const button = document.createElement("button");
             button.id = `add-list-btn-${this.id}`;
             button.textContent = "New List"
@@ -389,6 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (listName) {
                 const newList = new List(listName);
                 this.lists.push(newList);
+                newList.render();
                 // let app = store.get()
                 // let index = app.boards.findIndex(board => board.id === this.id)
                 // app.boards[index] = this;
@@ -401,7 +440,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let app = TodoApp.getTodoApp();
+    app.loadDefaultBoard();
     const addBoardButton = document.getElementById("btn-new-board");
+
+    const listContainer = document.querySelector(".list-container");
+    listContainer.addEventListener("dragstart", event => {
+        console.log(event)
+        event.target.closest(".card").classList.add("dragging");
+        event.dataTransfer.setData("text/plain", event.target.id);
+    })
+
+    listContainer.addEventListener("dragover", event => {
+        console.log(event)
+        event.preventDefault();
+        event.target.closest(".list")?.classList.add("dropable");
+
+    })
+    listContainer.addEventListener("dragleave", event => {
+        console.log(event)
+        event.preventDefault();
+        event.target.closest(".list")?.classList.remove("dropable");
+
+    })
+    listContainer.addEventListener("drop", event => {
+        event.preventDefault();
+        const targetList = event.target.closest(".list");
+        const cardId = event.dataTransfer.getData("text/plain");
+
+        const cardElement = document.getElementById(cardId);
+        const sourceList = cardElement.closest(".list");
+        targetList.classList.remove("dropable")
+
+        if (targetList.id !== sourceList.id) {
+            cardElement.remove();
+
+            const sourceListObj = app.boards[app.selectedBoardIndex].lists.find(list => list.id === sourceList.id);
+            const cardIndex = sourceListObj.cards.findIndex(card => card.id === cardId);
+            let deletedCard = sourceListObj.cards.splice(cardIndex, 1);
+
+
+            const targetListObj = app.boards[app.selectedBoardIndex].lists.find(list => list.id === targetList.id);
+            const newCard = targetListObj.addCard(deletedCard[0]);
+            targetListObj.renderCard(newCard);
+
+            app.save();
+        }
+
+
+    })
+
+
 
 
     addBoardButton.addEventListener("click", function () {
