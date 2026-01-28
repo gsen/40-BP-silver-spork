@@ -95,6 +95,12 @@ body {
             cursor: pointer;
           }
         }
+        .edit-card-btn {
+          position: absolute;
+          right: 32px;
+          color: green;
+          cursor: pointer;
+        }
       }
       .card-body {
         padding: 8px 16px;

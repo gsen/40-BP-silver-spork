@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const CUSTOM_EVENTS = {
         openNewCardDialog: "open-new-card-dialog",
+        openEditCardDialog: "open-edit-card-dialog",
         saveCard: "save-card",
         saveToStorage: "save-to-storage",
         deleteList: "delete-list"
@@ -135,7 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const deleteCard = document.createElement("span");
             deleteCard.classList.add("delete-card-btn");
             deleteCard.innerHTML = DELETE_SVG;
-            cardHeader.append(deleteCard);
+
+            const editCardButton = document.createElement("span");
+            editCardButton.classList.add("edit-card-btn");
+            editCardButton.innerHTML = EDIT_SVG;
+
+            cardHeader.append(editCardButton, deleteCard);
 
             const cardBody = document.createElement("section");
             cardBody.classList.add("card-body");
@@ -207,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".list-container").append(list);
             this.#listElement = list;
 
-            this.#listElement.addEventListener(CUSTOM_EVENTS.saveCard, this.handleNewCard.bind(this))
+            this.#listElement.addEventListener(CUSTOM_EVENTS.saveCard, this.handleCardSave.bind(this))
             this.#listElement.addEventListener("click", this.handleClick.bind(this))
             // listItemsContainer.addEventListener('custom-event', this.handleNewCard.bind(this))
         }
@@ -246,6 +252,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.syncToStore();
                 }
 
+            } else if (event.target.closest(".edit-card-btn")) {
+                console.log("edit card clicked")
+                const cardToEdit = event.target.closest(".card");
+
+                const customEvent = new CustomEvent(CUSTOM_EVENTS.openEditCardDialog, {
+                    bubbles: true,
+                    cancelable: true,
+                    detail: {
+                        listId: this.id,
+                        card: this.cards.find(card => card.id === cardToEdit.id)
+                    }
+                })
+
+                const cardDialog = document.querySelector("#new-card-dialog");
+                cardDialog.dispatchEvent(customEvent);
+
             }
         }
 
@@ -264,11 +286,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-        handleNewCard(event) {
+        handleCardSave(event) {
+
+
 
             // Array.from(event.target.children).forEach(child => child.dispatchEvent(new CustomEvent('custom-event', { detail: { ...event.detail } })))
-            this.renderCard(event.detail)
+            if (event.detail.mode === "edit") {
+                this.reRenderCard(event.detail)
+            } else {
+                this.renderCard(event.detail)
+            }
         }
+
+        reRenderCard({ name, description, dueDate, id }) {
+            let cardToUpdate = this.cards.find(card => card.id === id);
+
+            cardToUpdate.name = name;
+            cardToUpdate.description = description;
+            cardToUpdate.dueDate = dueDate;
+
+            const updatedCardElement = cardToUpdate.createCardElement();
+
+            const existingCardParent = document.getElementById(cardToUpdate.id)?.parentElement;
+
+            existingCardParent.replaceChildren(updatedCardElement);
+
+            this.syncToStore();
+
+        }
+
 
         renderCard({ name, description, dueDate, id }, saveToStorage = true) {
             let newCard = new Card(name, dueDate, description, id);
@@ -394,6 +440,34 @@ document.addEventListener("DOMContentLoaded", () => {
         form.dataset.listId = detail.listId;
 
     });
+
+    cardDialog.addEventListener(CUSTOM_EVENTS.openEditCardDialog, event => {
+        const { target: dialog, detail } = event;
+
+        dialog.classList.remove("hidden");
+        let form = dialog.querySelector("form");
+
+        const { name, id, dueDate, description } = detail.card;
+        const cardTitle = form.querySelector("#card-title");
+        cardTitle.value = name;
+
+        const cardDescription = form.querySelector("#card-description");
+        cardDescription.value = description;
+
+        const cardDueDate = form.querySelector("#card-due-date");
+        cardDueDate.value = dueDate;
+
+
+        form.dataset.mode = "edit";
+        form.dataset.cardId = id;
+
+        form.dataset.listId = detail.listId;
+
+        console.log(detail);
+
+
+
+    })
     cardForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const form = event.target;
@@ -404,19 +478,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const dueDate = formData.get("due-date");
         const listId = document.getElementById(form.dataset.listId);
 
+        const mode = form.dataset.mode;
 
         // const newCard = new Card(title, dueDate, description);
         // this.cards.push(newCard);
         // this.renderCard(newCard);
 
-        const addCardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, {
+        const cardId = form.dataset.cardId;
+        const cardEvent = new CustomEvent(CUSTOM_EVENTS.saveCard, mode === "edit" ? {
+            detail: {
+                name, description, dueDate, id: cardId, mode
+            }
+        } : {
             detail: {
                 name, description, dueDate
             }
-        });
+        })
 
-        listId.dispatchEvent(addCardEvent);
+
+        listId.dispatchEvent(cardEvent);
+
         form.dataset.listId = "";
+        form.dataset.cardId = ""
 
         form.reset()
 
