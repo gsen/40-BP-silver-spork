@@ -52,8 +52,26 @@
       const secondsElement = document.getElementById("seconds");
       const minutesElement = document.getElementById("minutes");
       const hoursElement = document.getElementById("hours");
+      //   function startTimer() {
+      //     timer = setInterval(() => {
+      //       seconds++;
+      //       if (seconds > 59) {
+      //         minutes++;
+      //         seconds = 0;
+      //       }
+      //       if (minutes > 59) {
+      //         minutes = 0;
+      //         hours++;
+      //       }
+      //       updateDigits();
+      //     }, 1000);
+      //   }
+
       function startTimer() {
-        timer = setInterval(() => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
           seconds++;
           if (seconds > 59) {
             minutes++;
@@ -64,7 +82,8 @@
             hours++;
           }
           updateDigits();
-        }, 100);
+          startTimer();
+        }, 1000);
       }
 
       function updateDigits() {
@@ -74,7 +93,8 @@
       }
 
       function stopTimer() {
-        clearInterval(timer);
+        // clearInterval(timer);
+        clearTimeout(timer);
       }
       startButton.addEventListener("click", startTimer);
       stopButton.addEventListener("click", stopTimer);
