@@ -52,6 +52,10 @@
       const secondsElement = document.getElementById("seconds");
       const minutesElement = document.getElementById("minutes");
       const hoursElement = document.getElementById("hours");
+
+      // Overlapping problem - see the stopwatch example with setinterval and with settimeout. click and start button
+      //   multiple times. notice the unpredictable behaviour in case of setInterval
+
       //   function startTimer() {
       //     timer = setInterval(() => {
       //       seconds++;
