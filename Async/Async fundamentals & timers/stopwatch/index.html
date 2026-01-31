@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch</title>
+    <style>
+      .container {
+        width: 400px;
+        margin: 100px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-direction: column;
+        .stop-watch {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          .digits {
+            font-size: 1.5rem;
+            font-weight: 600;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container">
+      <section class="stop-watch">
+        <span class="digits" id="hours"> 00 </span>
+        <span>:</span>
+        <span class="digits" id="minutes"> 00 </span>
+        <span>:</span>
+        <span class="digits" id="seconds"> 00 </span>
+      </section>
+      <section class="controls">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+      </section>
+    </section>
+
+    <script>
+      let timer;
+
+      const startButton = document.getElementById("start");
+      const stopButton = document.getElementById("stop");
+      let seconds = 0;
+      let minutes = 0;
+      let hours = 0;
+      const secondsElement = document.getElementById("seconds");
+      const minutesElement = document.getElementById("minutes");
+      const hoursElement = document.getElementById("hours");
+      function startTimer() {
+        timer = setInterval(() => {
+          seconds++;
+          if (seconds > 59) {
+            minutes++;
+            seconds = 0;
+          }
+          if (minutes > 59) {
+            minutes = 0;
+            hours++;
+          }
+          updateDigits();
+        }, 100);
+      }
+
+      function updateDigits() {
+        secondsElement.textContent = seconds < 10 ? `0${seconds}` : seconds;
+        minutesElement.textContent = minutes < 10 ? `0${minutes}` : minutes;
+        hoursElement.textContent = hours < 10 ? `0${hours}` : hours;
+      }
+
+      function stopTimer() {
+        clearInterval(timer);
+      }
+      startButton.addEventListener("click", startTimer);
+      stopButton.addEventListener("click", stopTimer);
+    </script>
+  </body>
+</html>
