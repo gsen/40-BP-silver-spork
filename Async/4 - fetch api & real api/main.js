@@ -31,17 +31,38 @@ function fetchPosts(postId) {
     return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(response => response.json())
 }
 
+// function fetchComments(postId) {
+//     return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`).then(response => {response.json()})
+// }
 function fetchComments(postId) {
     return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`).then(response => response.json())
 }
 
+function fetchUsers(comments) {
+    return fetch("https://jsonplaceholder.typicode.com/users").then(response => response.json())
+        .then(users => {
+            return comments.map(comment => {
+                // users.find(user=> user.email === comment.email)
+                return { ...comment, user: users[Math.floor(Math.random() * users.length)] }
+
+            })
+        })
+}
+
 function showComments(comments) {
-    console.log(comments)
-    //         < ul >
-    //                 <li>comment 1</li>
-    //                 <li>comment 2</li>
-    //                 <li>comment 3</li>
-    //             </ul >
+    if (comments.length) {
+        const commentsElement = document.querySelector("#post-comments");
+        const commentsContainer = document.createElement("ul");
+        for (let comment of comments) {
+            const commentsElement = document.createElement("li");
+            commentsElement.id = comment.id;
+            commentsElement.textContent = `${comment.name}, by - ${comment.user.name}`;
+            commentsContainer.append(commentsElement);
+        }
+
+        commentsElement.append(commentsContainer);
+    }
+
 }
 
 function showPosts(post) {
@@ -49,13 +70,8 @@ function showPosts(post) {
     postElement.innerHTML = `<article id=${post.id}>
         <h1>${post.title}</h1>
         <p>${post.body}</p>
-        <section id="comments">
+        <section id="post-comments">
             <h2>comments</h2>
-            <ul>
-                <li>comment 1</li>
-                <li>comment 2</li>
-                <li>comment 3</li>
-            </ul>
         </section>
     </article>`;
     return post.id;
@@ -66,6 +82,7 @@ document.querySelector("#show").addEventListener("click", function () {
     fetchPosts(document.querySelector("#posts-id").value)
         .then(showPosts)
         .then(fetchComments)
+        .then(fetchUsers)
         .then(showComments)
         .finally(clearLoader)
 })
