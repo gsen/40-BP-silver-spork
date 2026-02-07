@@ -19,8 +19,8 @@ fetch("http://127.0.0.1:5500/Async/3%20-%20Promise%20-%20the%20solution/example%
 
 fetch("https://jsonplaceholder.typicode.com/posts").then(response => response.json()).then(result => console.log(result))
 
-function showLoader() {
-    document.getElementById("status").textContent = "loading..."
+function showLoader(content = "loading...") {
+    document.getElementById("status").textContent = content;
 }
 function clearLoader() {
     document.getElementById("status").textContent = ""
@@ -28,22 +28,32 @@ function clearLoader() {
 }
 
 function fetchPosts(postId) {
-    return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(response => response.json())
+    return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(response =>
+        response.json()
+    )
 }
 
 // function fetchComments(postId) {
 //     return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`).then(response => {response.json()})
 // }
 function fetchComments(postId) {
-    return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`).then(response => response.json())
+    showLoader("fetching comments...")
+    return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+        .then(response => response.json())
 }
 
 function fetchUsers(comments) {
-    return fetch("https://jsonplaceholder.typicode.com/users").then(response => response.json())
+    showLoader("fetching user...")
+    return fetch("https://jsonplaceholder.typicode.com/users")
+        .then(response => response.json())
         .then(users => {
             return comments.map(comment => {
                 // users.find(user=> user.email === comment.email)
-                return { ...comment, user: users[Math.floor(Math.random() * users.length)] }
+                // using random index to attach a user with comment
+                return {
+                    ...comment,
+                    user: users[Math.floor(Math.random() * users.length)]
+                }
 
             })
         })
@@ -66,6 +76,7 @@ function showComments(comments) {
 }
 
 function showPosts(post) {
+    showLoader("fetching posts....")
     const postElement = document.getElementById("post");
     postElement.innerHTML = `<article id=${post.id}>
         <h1>${post.title}</h1>
