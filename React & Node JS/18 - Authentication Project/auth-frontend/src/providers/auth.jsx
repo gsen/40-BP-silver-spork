@@ -11,14 +11,14 @@ export default function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentUser = getItem(CURRENT_USER, "session");
+    let currentUser = getItem(CURRENT_USER) ?? getItem(CURRENT_USER, "session");
     if (currentUser) {
       setUser(currentUser);
       navigate("/");
     }
   }, []);
 
-  function authenticateUser(username, password) {
+  function authenticateUser(username, password, persistUser) {
     const users = getItem(USERS);
     const userInfo = users.find((user) => user.email === username && user.password === password);
     if (userInfo) {
@@ -26,7 +26,8 @@ export default function AuthProvider({ children }) {
         username: userInfo.email,
         name: userInfo.name,
       });
-      setItem(CURRENT_USER, userInfo, "session");
+
+      setItem(CURRENT_USER, userInfo, persistUser ? "local" : "session");
       return true;
     }
     return false;
@@ -34,6 +35,7 @@ export default function AuthProvider({ children }) {
 
   function logout() {
     setUser(null);
+    setItem(CURRENT_USER, null);
     setItem(CURRENT_USER, null, "session");
     navigate("/user");
   }

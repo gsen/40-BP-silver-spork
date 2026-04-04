@@ -8,12 +8,13 @@ export default function Login() {
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   function login(event) {
     event.preventDefault();
     console.log(userInfo);
-    if (authenticateUser(userInfo.email, userInfo.password)) {
+    if (authenticateUser(userInfo.email, userInfo.password, userInfo.rememberMe)) {
       navigate("/");
     }
   }
@@ -53,7 +54,16 @@ export default function Login() {
         />
       </fieldset>
       <fieldset className="flex gap-4 items-center">
-        <input type="checkbox" name="rememberMe" id="rememberMe" className="size-4" />
+        <input
+          type="checkbox"
+          name="rememberMe"
+          id="rememberMe"
+          className="size-4"
+          value={userInfo.rememberMe}
+          onChange={(event) => {
+            setUserInfo((prev) => ({ ...prev, rememberMe: event.target.checked }));
+          }}
+        />
         <label htmlFor="rememberMe">Remember me</label>
       </fieldset>
 
