@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, Link } from "react-router";
+import { useNavigate } from "react-router";
 import { updatePassword as setPassword } from "../../api/register";
 
 export default function ForgotPassword() {

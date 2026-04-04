@@ -82,7 +82,7 @@ export default function Login() {
       </section>
 
       <footer>
-        <Link to={""} className="underline">
+        <Link to={"/user/forgotPassword"} className="underline">
           Forgot Password
         </Link>
       </footer>
