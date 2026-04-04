@@ -2,9 +2,13 @@ import express from "express";
 import { connect, disconnect } from "./db.mjs";
 import chalk from "chalk";
 import cors from "cors";
+
+import authRouter from "./routes/auth.mjs";
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/auth", authRouter);
 
 const server = app.listen(process.env.PORT, async () => {
     console.log(chalk.greenBright(`Server is running on port ${process.env.PORT}`));
