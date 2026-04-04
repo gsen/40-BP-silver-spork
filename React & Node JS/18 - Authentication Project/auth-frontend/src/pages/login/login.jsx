@@ -1,15 +1,20 @@
 import { Link, useNavigate } from "react-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../providers/auth";
 
 export default function Login() {
   const { authenticateUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const inputRef = useRef(null);
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   function login(event) {
     event.preventDefault();
@@ -40,6 +45,7 @@ export default function Login() {
           name="email"
           value={userInfo.email}
           onChange={handleChange}
+          ref={inputRef}
         />
       </fieldset>
       <fieldset className="flex gap-4">

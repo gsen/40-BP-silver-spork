@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { registerUser as register } from "../../api/register";
 export default function Signup() {
   const navigate = useNavigate();
+  const inputRef = useRef(null);
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
     name: "",
   });
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   function registerUser(event) {
     event.preventDefault();
@@ -36,6 +41,7 @@ export default function Signup() {
         <fieldset className="flex gap-4 justify-between items-center">
           <label htmlFor="username">Email</label>
           <input
+            ref={inputRef}
             className="border rounded-xl p-1"
             type="email"
             id="username"
