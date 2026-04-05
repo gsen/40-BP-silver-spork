@@ -9,7 +9,7 @@ export default async function verfiyToken(req, res, next) {
         const result = await validateToken(token);
         console.log(result)
         if (result?.token) {
-            req.user = { username: result.username, name: result.name, id: result._id }
+            req.user = { username: result.username, name: result.name, id: result._id, token }
             next();
         } else {
             res.status(401).send({ message: "Invalid token" })

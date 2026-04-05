@@ -1,5 +1,5 @@
 import { hash, compare } from "bcrypt"
-import { createNewUser, getUser, updateUser } from "../repository/users.mjs";
+import { createNewUser, getUser, updateUser, logout as logoutUser } from "../repository/users.mjs";
 import generateToken from "../utils/token-generator.mjs";
 const SALT_ROUNDS = 10;
 export async function registerUser(req, res) {
@@ -19,7 +19,7 @@ export async function login(req, res) {
     const validUser = await compare(password, existingUser.password)
     if (validUser) {
         const token = generateToken();
-        updateUser(username, { token })
+        await updateUser(username, { token })
         res.send({
             username: existingUser.username, name: existingUser.name,
             token
@@ -27,4 +27,9 @@ export async function login(req, res) {
     } else {
         res.status(401).send('Invalid username or password!');
     }
+}
+
+export async function logout(req, res) {
+    await logoutUser(req.user.username, { token: null });
+    res.send({ message: "User logged out successfully!" })
 }

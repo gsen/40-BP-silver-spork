@@ -19,6 +19,13 @@ export function updateUser(username, updates) {
     return collection.updateOne({ username }, { $set: updates })
 }
 
+export function logout(username) {
+    const collection = getCollection();
+    console.log(username, "-logout")
+    collection.updateOne({ username }, { $unset: { token: "" } })
+
+}
+
 export function validateToken(token) {
     const collection = getCollection();
     return collection.findOne({ token });
