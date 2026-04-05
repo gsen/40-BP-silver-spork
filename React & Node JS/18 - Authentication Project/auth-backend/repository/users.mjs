@@ -13,3 +13,8 @@ export function getUser(username) {
     const collection = getCollection();
     return collection.findOne({ username })
 }
+
+export function updateUser(username, updates) {
+    const collection = getCollection();
+    return collection.updateOne({ username }, { $set: updates })
+}
