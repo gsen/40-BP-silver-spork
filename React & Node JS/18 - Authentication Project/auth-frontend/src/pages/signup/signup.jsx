@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
-import { registerUser as register } from "../../api/register";
+import { registerUser as register } from "../../api/auth-api";
 export default function Signup() {
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -14,10 +14,10 @@ export default function Signup() {
     inputRef.current?.focus();
   }, []);
 
-  function registerUser(event) {
+  async function registerUser(event) {
     event.preventDefault();
     console.log({ userInfo });
-    if (register(userInfo)) {
+    if (await register(userInfo)) {
       navigate("/user");
     }
   }

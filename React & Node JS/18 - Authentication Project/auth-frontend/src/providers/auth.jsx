@@ -3,6 +3,7 @@ import { getItem, setItem } from "../helpers/storage";
 import { CURRENT_USER, USERS } from "../helpers/common";
 import { createContext } from "react";
 import { useNavigate } from "react-router";
+import { login } from "../api/auth-api";
 
 export const AuthContext = createContext();
 
@@ -18,12 +19,11 @@ export default function AuthProvider({ children }) {
     }
   }, []);
 
-  function authenticateUser(username, password, persistUser) {
-    const users = getItem(USERS);
-    const userInfo = users.find((user) => user.email === username && user.password === password);
+  async function authenticateUser(username, password, persistUser) {
+    const userInfo = await login(username, password);
     if (userInfo) {
       setUser({
-        username: userInfo.email,
+        username: userInfo.username,
         name: userInfo.name,
       });
 

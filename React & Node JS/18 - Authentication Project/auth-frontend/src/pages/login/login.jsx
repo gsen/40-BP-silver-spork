@@ -16,10 +16,10 @@ export default function Login() {
     inputRef.current?.focus();
   }, []);
 
-  function login(event) {
+  async function login(event) {
     event.preventDefault();
     console.log(userInfo);
-    if (authenticateUser(userInfo.email, userInfo.password, userInfo.rememberMe)) {
+    if (await authenticateUser(userInfo.email, userInfo.password, userInfo.rememberMe)) {
       navigate("/");
     }
   }
