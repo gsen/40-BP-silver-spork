@@ -18,3 +18,8 @@ export function updateUser(username, updates) {
     const collection = getCollection();
     return collection.updateOne({ username }, { $set: updates })
 }
+
+export function validateToken(token) {
+    const collection = getCollection();
+    return collection.findOne({ token });
+}
