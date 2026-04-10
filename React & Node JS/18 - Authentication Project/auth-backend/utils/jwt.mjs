@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 export function generateToken(payload) {
     return new Promise((resolve, reject) => {
-        jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '2m' }, (error, token) => {
+        jwt.sign(payload, process.env.JWT_KEY, { expiresIn: process.env.TOKEN_VALIDITY }, (error, token) => {
             if (error) {
                 reject(error)
             } else {
