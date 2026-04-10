@@ -4,6 +4,10 @@ const USER_ENDPOINTS = {
     profile: `${baseUrl}/profile`
 }
 export async function fetchProfile() {
-    const response = await get(USER_ENDPOINTS.profile);
-    return response.json();
+    const result = await get(USER_ENDPOINTS.profile);
+    if (result.error) {
+        throw result.error
+    } else {
+        return result;
+    }
 }

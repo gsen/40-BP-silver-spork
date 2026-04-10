@@ -4,9 +4,10 @@ import { useNavigate } from "react-router";
 
 export default function Profile() {
   const navigate = useNavigate();
-  function displayUserProfile() {
+  async function displayUserProfile() {
     try {
-      fetchProfile().then(console.log);
+      const result = await fetchProfile();
+      console.log(result);
     } catch (ex) {
       console.error(ex);
       navigate("/user");

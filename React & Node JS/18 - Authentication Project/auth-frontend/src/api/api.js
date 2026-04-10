@@ -32,11 +32,21 @@ async function post(endPoint, body) {
 }
 
 async function get(endPoint) {
+    try {
 
-    const response = await fetch(`${backendURL}/${endPoint}`, {
-        headers: prepareHeaders({}, requiresToken(endPoint))
-    });
-    return response.json();
+        const response = await fetch(`${backendURL}/${endPoint}`, {
+            headers: prepareHeaders({}, requiresToken(endPoint))
+        });
+        if (!response.ok) {
+            const result = await response.json();
+            return { error: result }
+        } else {
+
+            return response.json();
+        }
+    } catch (ex) {
+        throw ex
+    }
 }
 
 export { post, get }
