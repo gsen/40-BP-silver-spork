@@ -2,9 +2,13 @@ import { getItem, setItem } from "../helpers/storage";
 import { USERS } from "../helpers/common";
 import { post } from "./api";
 const baseUrl = 'api/auth';
+export const AUTH_ENDPOINTS = {
+    registerUser: `${baseUrl}/register`,
+    login: `${baseUrl}/login`
+}
 export async function registerUser({ name, email, password }) {
     try {
-        const result = await post(`${baseUrl}/register`, { name, username: email, password });
+        const result = await post(AUTH_ENDPOINTS.registerUser, { name, username: email, password });
         return result;
     } catch (ex) {
         console.error(ex);
@@ -14,7 +18,7 @@ export async function registerUser({ name, email, password }) {
 
 export async function login(username, password) {
     try {
-        const result = await post(`${baseUrl}/login`, { username, password });
+        const result = await post(AUTH_ENDPOINTS.login, { username, password });
         return result;
     } catch (ex) {
         console.error(ex);

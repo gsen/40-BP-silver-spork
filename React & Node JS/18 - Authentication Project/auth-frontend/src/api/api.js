@@ -1,20 +1,41 @@
+import { requiresToken } from "../helpers/common";
+import { getAuthToken } from "../helpers/storage";
+
+
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
+function prepareHeaders(headers = {}, requiresToken) {
+
+    const customHeaders = new Headers(headers);
+
+    if (requiresToken) {
+        const token = getAuthToken();
+        if (!token) {
+            throw new Error("User needs to be authenticated")
+        }
+        customHeaders.set("Authorization", token);
+    }
+    return customHeaders;
+}
+
 async function post(endPoint, body) {
+
     const response = await fetch(`${backendURL}/${endPoint}`, {
         method: 'POST',
         body: JSON.stringify(body),
-        headers: {
+        headers: prepareHeaders({
             "Content-Type": "application/json"
-            "Authorization": ""
-        }
+        }, requiresToken(endPoint))
     });
 
     return response.json();
 }
 
 async function get(endPoint) {
-    const response = await fetch(`${backendURL}/${endPoint}`);
+
+    const response = await fetch(`${backendURL}/${endPoint}`, {
+        headers: prepareHeaders({}, requiresToken(endPoint))
+    });
     return response.json();
 }
 
