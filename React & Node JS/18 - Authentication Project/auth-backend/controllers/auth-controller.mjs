@@ -14,16 +14,19 @@ export async function registerUser(req, res) {
 
 export async function login(req, res) {
     const { username, password } = req.body;
-
     const existingUser = await getUser(username);
     const validUser = await compare(password, existingUser.password)
     if (validUser) {
-        const token = generateToken();
-        await updateUser(username, { token })
-        res.send({
-            username: existingUser.username, name: existingUser.name,
-            token
-        })
+        try {
+            const token = await generateToken({ username, name: existingUser.name });
+            await updateUser(username, { token })
+            res.send({
+                username: existingUser.username, name: existingUser.name,
+                token
+            })
+        } catch (ex) {
+            res.status(500).send({ message: 'Error while generating token' })
+        }
     } else {
         res.status(401).send('Invalid username or password!');
     }
