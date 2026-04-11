@@ -2,11 +2,16 @@ import express from "express";
 import { connect, disconnect } from "./db.mjs";
 import chalk from "chalk";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import authRouter from "./routes/auth.mjs";
 import userRouter from "./routes/user.mjs";
 const app = express();
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+}));
 app.use(express.json());
 
 app.use("/api/auth", authRouter);

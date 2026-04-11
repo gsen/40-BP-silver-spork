@@ -1,7 +1,8 @@
 import { validateToken } from "../utils/jwt.mjs";
 
 export default async function verfiyToken(req, res, next) {
-    const token = req.headers['authorization'];
+    const token = req.cookies.token;
+    console.log("token", token)
     if (!token) {
         res.status(401).send({ message: 'No token found' });
     } else {

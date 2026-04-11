@@ -19,10 +19,13 @@ export async function login(req, res) {
     if (validUser) {
         try {
             const token = await generateToken({ username, name: existingUser.name, id: existingUser._id });
-            await updateUser(username, { token })
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: false, // true in case of https,
+                maxAge: 60 * 60 * 1000
+            })
             res.send({
                 username: existingUser.username, name: existingUser.name,
-                token
             })
         } catch (ex) {
             res.status(500).send({ message: 'Error while generating token' })

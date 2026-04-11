@@ -9,11 +9,7 @@ function prepareHeaders(headers = {}, requiresToken) {
     const customHeaders = new Headers(headers);
 
     if (requiresToken) {
-        const token = getAuthToken();
-        if (!token) {
-            throw new Error("User needs to be authenticated")
-        }
-        customHeaders.set("Authorization", token);
+        customHeaders.set("credentials", "include");
     }
     return customHeaders;
 }
@@ -35,7 +31,8 @@ async function get(endPoint) {
     try {
 
         const response = await fetch(`${backendURL}/${endPoint}`, {
-            headers: prepareHeaders({}, requiresToken(endPoint))
+            headers: prepareHeaders({
+            }, requiresToken(endPoint))
         });
         if (!response.ok) {
             const result = await response.json();
