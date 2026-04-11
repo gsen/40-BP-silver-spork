@@ -3,7 +3,7 @@ import { getItem, setItem } from "../helpers/storage";
 import { CURRENT_USER, USERS } from "../helpers/common";
 import { createContext } from "react";
 import { useNavigate } from "react-router";
-import { login } from "../api/auth-api";
+import { login, logout as logoutAPI } from "../api/auth-api";
 
 export const AuthContext = createContext();
 
@@ -33,11 +33,14 @@ export default function AuthProvider({ children }) {
     return false;
   }
 
-  function logout() {
+  async function logout() {
     setUser(null);
     setItem(CURRENT_USER, null);
     setItem(CURRENT_USER, null, "session");
-    navigate("/user");
+    const result = await logoutAPI();
+    if (result) {
+      navigate("/user");
+    }
   }
 
   return <AuthContext value={{ user, authenticateUser, logout }}>{children}</AuthContext>;
