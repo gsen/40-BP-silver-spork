@@ -38,8 +38,6 @@ export async function login(req, res) {
 }
 
 export async function logout(req, res) {
-    const token = req.cookies.token;
-    console.log(token);
-    res.clearCookie(token);
+    res.clearCookie("token", COOKIE_OPTIONS);
     res.send({ message: "User logged out successfully!" })
 }
