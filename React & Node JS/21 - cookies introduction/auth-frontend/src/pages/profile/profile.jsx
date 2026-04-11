@@ -17,5 +17,10 @@ export default function Profile() {
   useEffect(() => {
     displayUserProfile();
   }, []);
-  return <div>Profile</div>;
+  return (
+    <form action="http://localhost:3000/api/user/profile" encType="multipart/form-data" method="post">
+      <input type="file" name="avatar" />
+      <button type="submit">Upload</button>
+    </form>
+  );
 }
