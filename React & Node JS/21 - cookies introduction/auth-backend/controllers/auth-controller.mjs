@@ -22,7 +22,8 @@ export async function login(req, res) {
             res.cookie("token", token, {
                 httpOnly: true,
                 secure: false, // true in case of https,
-                maxAge: 60 * 60 * 1000
+                maxAge: 60 * 60 * 1000,
+                sameSite: "lax"
             })
             res.send({
                 username: existingUser.username, name: existingUser.name,

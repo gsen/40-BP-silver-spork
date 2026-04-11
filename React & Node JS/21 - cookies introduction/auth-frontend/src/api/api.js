@@ -1,16 +1,7 @@
-import { requiresToken } from "../helpers/common";
-import { getAuthToken } from "../helpers/storage";
-
-
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-function prepareHeaders(headers = {}, requiresToken) {
-
+function prepareHeaders(headers = {}) {
     const customHeaders = new Headers(headers);
-
-    if (requiresToken) {
-        customHeaders.set("credentials", "include");
-    }
     return customHeaders;
 }
 
@@ -21,7 +12,8 @@ async function post(endPoint, body) {
         body: JSON.stringify(body),
         headers: prepareHeaders({
             "Content-Type": "application/json"
-        }, requiresToken(endPoint))
+        }),
+        credentials: "include"
     });
 
     return response.json();
@@ -31,8 +23,8 @@ async function get(endPoint) {
     try {
 
         const response = await fetch(`${backendURL}/${endPoint}`, {
-            headers: prepareHeaders({
-            }, requiresToken(endPoint))
+            headers: prepareHeaders({}),
+            credentials: "include"
         });
         if (!response.ok) {
             const result = await response.json();
