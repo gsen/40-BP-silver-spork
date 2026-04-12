@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { fetchProfile, profilePicture } from "../controllers/user-controller.mjs";
-import verifyToken from "../middleware/verify-token.mjs";
 import multer from "multer";
+
 
 function getExtension(mimeType) {
     return mimeType?.split("/")[1];
@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const router = new Router();
 const upload = multer({ storage })
-router.get("/profile", verifyToken, fetchProfile);
+router.get("/profile", fetchProfile);
 router.post("/profile/pic", upload.single('avatar'), profilePicture)
 
 export default router;

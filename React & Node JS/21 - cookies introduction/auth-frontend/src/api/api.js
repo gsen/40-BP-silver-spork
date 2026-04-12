@@ -1,5 +1,12 @@
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
+export function setImagePath(path) {
+    if (path) {
+        return `${backendURL}/${path}`
+    }
+    return ""
+}
+
 function prepareHeaders(contentType) {
 
     const customHeaders = new Headers();

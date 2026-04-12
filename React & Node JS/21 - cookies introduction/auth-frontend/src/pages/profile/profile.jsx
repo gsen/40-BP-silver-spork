@@ -1,13 +1,17 @@
 import React, { useEffect } from "react";
 import { fetchProfile, uploadProfileImage } from "../../api/user-api";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { setImagePath } from "../../api/api";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
   async function displayUserProfile() {
     try {
       const result = await fetchProfile();
       console.log(result);
+      setProfile({ ...result, profileImage: setImagePath(result.profileImage) });
     } catch (ex) {
       console.error(ex);
       navigate("/user");
@@ -23,6 +27,7 @@ export default function Profile() {
     const result = await uploadProfileImage(formData);
     if (result) {
       alert("Profile image uploaded!");
+      displayUserProfile();
     }
   }
 
@@ -30,9 +35,14 @@ export default function Profile() {
     displayUserProfile();
   }, []);
   return (
-    <form onSubmit={uploadProfilePicture}>
-      <input type="file" name="avatar" />
-      <button type="submit">Upload</button>
-    </form>
+    <>
+      <form onSubmit={uploadProfilePicture}>
+        <input type="file" name="avatar" />
+        <button type="submit">Upload</button>
+      </form>
+      <section className="">
+        <img className="size-40" src={profile?.profileImage} alt={profile?.name} />
+      </section>
+    </>
   );
 }
