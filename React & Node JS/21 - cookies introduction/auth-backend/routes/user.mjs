@@ -17,8 +17,17 @@ const storage = multer.diskStorage({
     }
 })
 
+function fileFilter(req, file, cb) {
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+    if (allowedTypes.includes(file.mimeType)) {
+        cb(null, true);
+    } else {
+        cb(new Error("Invalid file type"), false);
+    }
+}
+
 const router = new Router();
-const upload = multer({ storage })
+const upload = multer({ storage, fileFilter })
 router.get("/profile", fetchProfile);
 router.post("/profile/pic", upload.single('avatar'), profilePicture)
 
