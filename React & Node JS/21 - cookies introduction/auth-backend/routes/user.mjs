@@ -20,6 +20,6 @@ const storage = multer.diskStorage({
 const router = new Router();
 const upload = multer({ storage })
 router.get("/profile", verifyToken, fetchProfile);
-router.post("/profile", upload.single('avatar'), profilePicture)
+router.post("/profile/pic", upload.single('avatar'), profilePicture)
 
 export default router;

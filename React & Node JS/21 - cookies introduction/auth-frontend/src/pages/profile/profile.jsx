@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { fetchProfile } from "../../api/user-api";
+import { fetchProfile, uploadProfileImage } from "../../api/user-api";
 import { useNavigate } from "react-router";
 
 export default function Profile() {
@@ -14,11 +14,23 @@ export default function Profile() {
     }
   }
 
+  async function uploadProfilePicture(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    const file = event.target.avatar.files[0];
+    formData.append("avatar", file);
+
+    const result = await uploadProfileImage(formData);
+    if (result) {
+      alert("Profile image uploaded!");
+    }
+  }
+
   useEffect(() => {
     displayUserProfile();
   }, []);
   return (
-    <form action="http://localhost:3000/api/user/profile" encType="multipart/form-data" method="post">
+    <form onSubmit={uploadProfilePicture}>
       <input type="file" name="avatar" />
       <button type="submit">Upload</button>
     </form>

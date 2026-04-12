@@ -1,18 +1,20 @@
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-function prepareHeaders(headers = {}) {
-    const customHeaders = new Headers(headers);
+function prepareHeaders(contentType) {
+
+    const customHeaders = new Headers();
+    if (contentType) {
+        customHeaders.append("Content-Type", contentType);
+    }
     return customHeaders;
 }
 
-async function post(endPoint, body) {
+async function post(endPoint, body, contentType = "application/json") {
 
     const response = await fetch(`${backendURL}/${endPoint}`, {
         method: 'POST',
-        body: JSON.stringify(body),
-        headers: prepareHeaders({
-            "Content-Type": "application/json"
-        }),
+        body: contentType === "application/json" ? JSON.stringify(body) : body,
+        headers: prepareHeaders(contentType),
         credentials: "include"
     });
 
