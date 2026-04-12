@@ -7,14 +7,12 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.mjs";
 import userRouter from "./routes/user.mjs";
 import verfiyToken from "./middleware/verify-token.mjs";
-import errorHandler from "./middleware/error-hanlder.mjs";
 const app = express();
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
 }));
-app.use(errorHandler);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRouter);
