@@ -5,7 +5,7 @@ export default function Users({ users }) {
   const [count, setCount] = useState(0);
 
   function filterAndSortUsers() {
-    console.log("Filtering and sorting users...");
+    console.log("Filtering and sorting users...-without useMemo");
     return users
       .filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
       .sort((a, b) => a.name.localeCompare(b.name));
