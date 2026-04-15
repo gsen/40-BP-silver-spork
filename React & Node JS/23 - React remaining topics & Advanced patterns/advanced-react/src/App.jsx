@@ -1,7 +1,8 @@
 import { useState } from "react";
+import Todos from "./components/todo-list/todos";
 
 function App() {
-  return <h1>App is running</h1>;
+  return <Todos />;
 }
 
 export default App;
