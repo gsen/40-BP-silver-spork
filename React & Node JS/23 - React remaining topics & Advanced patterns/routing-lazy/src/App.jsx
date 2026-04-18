@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { useState, lazy } from "react";
 
 import { Link, Route, Routes } from "react-router";
-
+import { ErrorBoundary } from "react-error-boundary";
 const Home = lazy(() => import("./pages/home"));
 const About = lazy(() => import("./pages/about"));
 const Contact = lazy(() => import("./pages/contact"));
@@ -42,7 +42,9 @@ function App() {
           path="/contact"
           element={
             <Suspense fallback={<div>Loading...</div>}>
-              <Contact />
+              <ErrorBoundary fallback={<div>❌Failed to load contact information.</div>}>
+                <Contact />
+              </ErrorBoundary>
             </Suspense>
           }
         />
