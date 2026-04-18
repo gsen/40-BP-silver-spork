@@ -6,6 +6,7 @@ import Users from "./components/use-memo-example/problem";
 import UsersWithMemo from "./components/use-memo-example/solution";
 import WithoutCallback from "./components/use-callback-example/problem";
 import WithCallback from "./components/use-callback-example/solution";
+import Parent from "./components/forward-ref/parent";
 
 const Preview = lazy(() => import("./components/lazy-loading/lazy"));
 function App() {
@@ -32,6 +33,7 @@ function App() {
       {preview && (
         <Suspense fallback={<div>Loading...</div>}>
           <Preview />
+          <Parent />
         </Suspense>
       )}
     </>
