@@ -2,16 +2,18 @@ import express from "express";
 import { connect, disconnect } from "./config/db.mjs";
 import chalk from "chalk";
 import cors from "cors";
-
+import userRouter from "./routes/user-router.mjs"
+import { createModel } from "./models/users.mjs";
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/user", userRouter);
 
 
 const server = app.listen(process.env.PORT, async () => {
     console.log(chalk.greenBright(`Server is running on port ${process.env.PORT}`));
     await connect(process.env.CONNECTION_STRING);
+    createModel();
 })
 
 process.on("SIGINT", async () => {
