@@ -4,7 +4,7 @@ import { getDB } from "../config/db.mjs";
 const usersSchema = new Schema({
     firstName: String,
     lastName: String,
-    age: { type: Number }
+    age: { type: Number, required: true }
 })
 
 let UserModel;
