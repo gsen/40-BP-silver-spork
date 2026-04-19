@@ -19,7 +19,6 @@ export async function login(req, res) {
     if (validUser) {
         try {
             const token = await generateToken({ username, name: existingUser.name, id: existingUser._id });
-            await updateUser(username, { token })
             res.send({
                 username: existingUser.username, name: existingUser.name,
                 token

@@ -1,6 +1,8 @@
 import User from "../models/users.mjs";
 import { hash, compare } from "bcrypt";
 const SALT_ROUNDS = 10;
+import { generateToken } from "./jwt-service.mjs";
+import chalk from "chalk";
 export async function createUser(user) {
     try {
         await User.init(); // ensure index is built - duplicate emails will not be allowed
@@ -14,28 +16,31 @@ export async function createUser(user) {
 function hashPassword(password) {
     if (password) {
         return hash(password, SALT_ROUNDS)
+    } else {
+        throw new Error("Password not found")
     }
 }
 
-// export async function login(credentials) {
-//     const { username, password } = credentials;
-//     const existingUser = await getUser(username);
-//     const validUser = await compare(password, existingUser.password)
-//     if (validUser) {
-//         try {
-//             const token = await generateToken({ username, name: existingUser.name, id: existingUser._id });
-//             await updateUser(username, { token })
-//             res.send({
-//                 username: existingUser.username, name: existingUser.name,
-//                 token
-//             })
-//         } catch (ex) {
-//             res.status(500).send({ message: 'Error while generating token' })
-//         }
-//     } else {
-//         res.status(401).send('Invalid username or password!');
-//     }
-// }
+export async function authenticateUser(credentials) {
+    const { email, password } = credentials;
+    const existingUser = await User.findOne({ email });
+    const validUser = await compare(password, existingUser.password);
+    if (validUser) {
+        try {
+            const { firstName, lastName, role, _id: id } = existingUser;
+            const token = await generateToken({
+                email, firstName, lastName,
+                id, role
+            });
+            return { user: { email, role, id, firstName, lastName }, token };
+        } catch (ex) {
+            console.error(chalk.redBright(ex));
+            return { error: "Error while generating token" }
+        }
+    } else {
+        return { error: 'Invalid username or password!' };
+    }
+}
 
 // export async function logout(req, res) {
 //     await logoutUser(req.user.username, { token: null });
