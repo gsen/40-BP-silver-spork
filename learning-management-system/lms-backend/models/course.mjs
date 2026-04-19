@@ -8,10 +8,7 @@ const courseSchema = new Schema({
         type: Schema.Types.ObjectId, ref: 'Lecture'
     }],
     thumbnail: String,
-    studentsEnrolled: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }]
+    totalStudents: Number
 
 }, { timestamps: true })
 

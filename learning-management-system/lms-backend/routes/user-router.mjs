@@ -1,8 +1,6 @@
-import { Router } from "express";
-import { saveUser } from "../controllers/user-controller.mjs";
+// import { Router } from "express";
 
-const router = new Router();
+// const router = new Router();
 
-router.post("/", saveUser)
 
-export default router;
+// export default router;
