@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import "./App.css";
-import { add, decrement, increment, reset } from "./store/reducer";
+import { add, decrement, increment, reset } from "./store/actions";
 
 function App() {
   const count = useSelector((state) => state.count);
