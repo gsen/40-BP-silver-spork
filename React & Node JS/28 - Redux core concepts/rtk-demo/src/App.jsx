@@ -1,18 +1,19 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { increment, decrement, reset, add } from "./slices/counter-slice";
 import "./App.css";
 
 function App() {
-  let count = 0;
+  let count = useSelector((state) => state.counter.count);
+  const dispatch = useDispatch();
   return (
     <>
       <section id="center">
         <button
           className="counter"
           onClick={() => {
-            // dispatch(increment());
+            dispatch(increment());
           }}
         >
           +
@@ -21,7 +22,7 @@ function App() {
         <button
           className="counter"
           onClick={() => {
-            // dispatch(decrement());
+            dispatch(decrement());
           }}
         >
           -
@@ -30,7 +31,7 @@ function App() {
         <button
           className="counter"
           onClick={() => {
-            // dispatch(add(5));
+            dispatch(add(5));
           }}
         >
           Add 5
