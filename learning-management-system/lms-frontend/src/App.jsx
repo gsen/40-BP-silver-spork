@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { LoginForm as Login } from "@/components/login/login";
 
 import "./App.css";
 
@@ -12,7 +13,7 @@ function App() {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Tailwind is running</h1>
-      <Button variant="outline" onClick={() => setCount(count + 1)}>
+      {/* <Button variant="outline" onClick={() => setCount(count + 1)}>
         Count is: {count}
       </Button>
       <Checkbox checked={checked} onCheckedChange={setChecked} />
@@ -22,7 +23,12 @@ function App() {
         <AlertAction>
           <Button variant="outline">Enable</Button>
         </AlertAction>
-      </Alert>
+      </Alert> */}
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <Login />
+        </div>
+      </div>
     </>
   );
 }
