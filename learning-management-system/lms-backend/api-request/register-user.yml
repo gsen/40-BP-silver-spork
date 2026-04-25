@@ -13,7 +13,7 @@ http:
         "firstName": "John",
         "lastName": "Doe",
         "email": "student@test.com",
-        "password": "test123"
+        "password": ""
       }
   auth: inherit
 
