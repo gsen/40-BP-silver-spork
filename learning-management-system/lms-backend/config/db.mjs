@@ -1,6 +1,5 @@
 import chalk from "chalk"
 import mongoose from "mongoose";
-let client;
 /** @type {import("mongoose")} */
 let db;
 export async function connect(connectionString) {
@@ -11,6 +10,7 @@ export async function connect(connectionString) {
     } catch (err) {
         console.log(chalk.redBright("Error connecting to mongo server"));
         console.log(err);
+        throw err;
     }
 }
 
@@ -19,8 +19,8 @@ export function getDB() {
 }
 
 export async function disconnect() {
-    if (client) {
-        await db.disconnect()
+    if (db) {
+        await mongoose.disconnect()
         console.log("%cDisconnected successfully from mongo server", "color: blue;");
     }
 }

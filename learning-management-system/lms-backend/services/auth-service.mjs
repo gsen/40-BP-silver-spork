@@ -9,7 +9,11 @@ export async function createUser(user) {
         const newUser = await User.create({ ...user, password: await hashPassword(user.password) });
         return { error: null, user: newUser }
     } catch (ex) {
-        return { error: ex.errorResponse.errmsg }
+        if (ex.code === 11000) {
+            return { error: "Email already exists" };
+        }
+
+        return { error: ex.message };
     }
 }
 
@@ -24,6 +28,10 @@ function hashPassword(password) {
 export async function authenticateUser(credentials) {
     const { email, password } = credentials;
     const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+        return { error: 'Invalid username or password!' };
+    }
+
     const validUser = await compare(password, existingUser.password);
     if (validUser) {
         try {
@@ -46,4 +54,3 @@ export async function authenticateUser(credentials) {
 //     await logoutUser(req.user.username, { token: null });
 //     res.send({ message: "User logged out successfully!" })
 // }
-

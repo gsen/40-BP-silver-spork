@@ -4,6 +4,9 @@ import chalk from "chalk";
 import cors from "cors";
 // import userRouter from "./routes/user-router.mjs"
 import authRouter from "./routes/auth-router.mjs";
+import courseRouter from "./routes/course-router.mjs";
+import enrollmentRouter from "./routes/enrollment-router.mjs";
+import lectureRouter from "./routes/lecture-router.mjs";
 import cookieParser from "cookie-parser";
 const app = express();
 app.use(cors({
@@ -13,13 +16,17 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 // app.use("/api/user", userRouter);
-app.use("/api/auth", authRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/courses", courseRouter);
+app.use("/api/lectures", lectureRouter);
+app.use("/api/enrollments", enrollmentRouter);
 
 
 
-const server = app.listen(process.env.PORT, async () => {
+await connect(process.env.CONNECTION_STRING);
+
+const server = app.listen(process.env.PORT, () => {
     console.log(chalk.greenBright(`Server is running on port ${process.env.PORT}`));
-    await connect(process.env.CONNECTION_STRING);
 })
 
 process.on("SIGINT", async () => {
