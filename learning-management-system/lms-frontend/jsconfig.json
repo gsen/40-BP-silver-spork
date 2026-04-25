@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./*"],
+      "@components/*": ["./components/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@lib/*": ["./lib/*"],
+      "@ui/*": ["./components/ui/*"],
+      "@utils": ["./lib/utils"]
+    }
+  },
+  "include": ["src", "components", "lib", "hooks", "vite.config.js"]
+}
