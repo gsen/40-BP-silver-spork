@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { LoginForm } from "@/src/components/auth/login";
+import { LoginForm } from "@components/auth/login";
 import "./App.css";
 import { Routes, Route } from "react-router";
-import AuthLayout from "@/src/components/auth/auth-layout";
-import { SignupForm } from "@/src/components/auth/sign-up";
+import AuthLayout from "@components/auth/auth-layout";
+import { SignupForm } from "@components/auth/sign-up";
 
 function App() {
   return (

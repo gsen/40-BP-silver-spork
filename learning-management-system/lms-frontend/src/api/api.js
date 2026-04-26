@@ -7,66 +7,107 @@ export function setImagePath(path) {
     return "";
 }
 
-const DEFAULT_HEADERS = new Headers({
+const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
-});
+};
+
+class ApiError extends Error {
+    constructor(message, status, data) {
+        super(message);
+        this.name = "ApiError";
+        this.status = status;
+        this.data = data;
+    }
+}
+
+function getErrorMessage(data) {
+    if (typeof data === "string" && data.trim()) {
+        return data;
+    }
+
+    return data?.message || data?.error || "Something went wrong. Please try again.";
+}
+
+function parseBody(text) {
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return text;
+    }
+}
+
+function mergeConfig(baseConfig, config) {
+    return {
+        ...baseConfig,
+        ...config,
+        headers: {
+            ...baseConfig.headers,
+            ...config.headers,
+        },
+    };
+}
+
+async function parseResponse(response) {
+    const text = await response.text();
+    const data = parseBody(text);
+
+    if (!response.ok) {
+        throw new ApiError(getErrorMessage(data), response.status, data);
+    }
+
+    return data;
+}
+
+async function request(endPoint, config = {}) {
+    try {
+        const response = await fetch(`${backendURL}/${endPoint}`, config);
+        return await parseResponse(response);
+    } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
+
+        throw new ApiError("Unable to connect to the server. Please try again.", 0, error);
+    }
+}
 
 async function post(
     endPoint,
     body,
     credentials = true,
-    config = {
-
-    },
+    config = {},
 ) {
-    let baseConifg = {
+    const baseConfig = {
+        method: "POST",
         body: JSON.stringify(body),
         headers: DEFAULT_HEADERS,
-    }
+    };
+
     if (credentials) {
-        baseConifg.credentials = "include";
-    }
-    const response = await fetch(`${backendURL}/${endPoint}`, {
-        method: "POST",
-        ...baseConifg,
-        ...config
-    });
-    if (!response.ok) {
-        const result = await response.json();
-        return { error: result };
-    } else {
-        return response.json();
+        baseConfig.credentials = "include";
     }
 
+    return request(endPoint, mergeConfig(baseConfig, config));
 }
 
 async function get(
     endPoint,
     credentials = true,
-    config = {
-    },
+    config = {},
 ) {
-    try {
-        let baseConfig = {
-            headers: DEFAULT_HEADERS
-        }
-        if (credentials) {
-            baseConifg.credentials = "include";
-        }
-        const response = await fetch(`${backendURL}/${endPoint}`, {
-            ...baseConfig,
-            ...config
-        });
+    const baseConfig = {
+        headers: DEFAULT_HEADERS,
+    };
 
-        if (!response.ok) {
-            const result = await response.json();
-            return { error: result };
-        } else {
-            return response.json();
-        }
-    } catch (ex) {
-        throw ex;
+    if (credentials) {
+        baseConfig.credentials = "include";
     }
+
+    return request(endPoint, mergeConfig(baseConfig, config));
 }
 
-export { post, get };
+export { post, get, ApiError };
