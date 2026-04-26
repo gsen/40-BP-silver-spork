@@ -83,16 +83,16 @@ This project is configured for JavaScript shadcn/ui components. The important se
 3. Enable TypeScript path resolution in `vite.config.js`:
 
    ```js
-   import { defineConfig } from 'vite'
-   import react from '@vitejs/plugin-react'
-   import tailwindcss from '@tailwindcss/vite'
+   import { defineConfig } from "vite";
+   import react from "@vitejs/plugin-react";
+   import tailwindcss from "@tailwindcss/vite";
 
    export default defineConfig({
      plugins: [react(), tailwindcss()],
      resolve: {
        tsconfigPaths: true,
      },
-   })
+   });
    ```
 
 4. Initialize shadcn/ui:
@@ -147,15 +147,215 @@ This project is configured for JavaScript shadcn/ui components. The important se
    }
    ```
 
-Currently, two official plugins are available:
+# 🎓 Mini Udemy --- Frontend Feature Guide
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🧠 Overview
 
-## React Compiler
+You will build the frontend for a full-stack learning platform using:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + Router
+- Redux Toolkit (RTK Query)
+- shadcn/ui (UI components)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# 📄 Pages (Route-Level)
+
+## 🌐 Public Pages
+
+### 🏠 Home Page
+
+- List all courses
+- Display course cards
+- (Optional) Search functionality
+
+### 📘 Course Details Page
+
+- Course title & description
+- Instructor info
+- Lecture list (preview)
+- Enroll button
+
+---
+
+## 🔐 Auth Pages
+
+### 🔑 Login Page
+
+- Email & password input
+- Error handling
+- Redirect after login
+
+### 📝 Register Page
+
+- Name, email, password
+- Role selection (student/instructor)
+
+---
+
+## 🎓 Student Pages
+
+### 📊 Dashboard
+
+- List of enrolled courses
+- Show progress %
+
+### 📚 My Courses
+
+- View enrolled courses
+
+### 🎥 Course Player Page (Core Page)
+
+- Video player
+- Lecture sidebar
+- Mark lecture as completed
+- Progress bar
+
+---
+
+## 👨‍🏫 Instructor Pages
+
+### 📊 Instructor Dashboard
+
+- Courses created
+- Total students
+
+### ➕ Create Course
+
+- Title, description, thumbnail upload
+
+### ✏️ Manage Courses
+
+- Edit course
+- Delete course
+- Add lectures
+
+---
+
+## 🤖 AI Feature
+
+### 💬 AI Chat Panel
+
+- Ask questions
+- Streaming responses
+- Chat UI
+
+---
+
+# 🧩 Components
+
+## Common
+
+- Navbar
+- Loader
+- Error message
+
+## Course
+
+- CourseCard
+- CourseList
+- CourseForm
+- LectureList
+- LectureItem
+
+## Player
+
+- VideoPlayer
+- ProgressBar
+- LectureSidebar
+
+## Auth
+
+- LoginForm
+- RegisterForm
+
+## AI
+
+- AIChat
+- ChatMessage
+- ChatInput
+
+---
+
+# ⚙️ Functionality
+
+## Authentication
+
+- Register / Login / Logout
+- Persist session
+
+## Courses
+
+- View / Create / Edit / Delete
+
+## Lectures
+
+- Add / Watch / Navigate
+
+## Enrollment
+
+- Enroll / Prevent duplicates / View courses
+
+## Progress
+
+- Mark complete / Track % / Resume
+
+## API (RTK Query)
+
+- Fetch data
+- Cache data
+- Auto updates
+
+## UI
+
+- Responsive
+- Reusable components
+- Toasts
+
+## AI
+
+- Ask questions
+- Streaming responses
+
+---
+
+# 🧠 State Management
+
+## Global
+
+- Auth
+- API cache
+
+## Local
+
+- Forms
+- UI state
+
+---
+
+# 🧭 Layouts
+
+- MainLayout
+- DashboardLayout
+
+---
+
+# 🔗 Routes
+
+/\
+/login\
+/register\
+/courses/:id\
+/dashboard\
+/my-courses\
+/player/:courseId\
+/instructor\
+/instructor/create\
+/instructor/manage
+
+---
+
+# 🏆 Goal
+
+Build a production-ready frontend with clean architecture and modern
+practices.
