@@ -60,15 +60,17 @@ This project is configured for JavaScript shadcn/ui components. The important se
      "compilerOptions": {
        "jsx": "react-jsx",
        "paths": {
-         "@/*": ["./*"],
-         "@components/*": ["./components/*"],
+         "@/*": ["./src/*"],
+         "@components/*": ["./src/components/*"],
          "@hooks/*": ["./hooks/*"],
-         "@lib/*": ["./lib/*"],
-         "@ui/*": ["./components/ui/*"],
-         "@utils": ["./lib/utils"]
+         "@lib/*": ["./src/lib/*"],
+         "@ui/*": ["./src/components/ui/*"],
+         "@utils": ["./src/lib/utils"],
+         "@api/*": ["./src/api/*"],
+         "@store/*": ["./src/store/*"]
        }
      },
-     "include": ["src", "components", "lib", "hooks", "vite.config.js"]
+     "include": ["src", "src/components", "src/lib", "hooks", "vite.config.js"]
    }
    ```
 

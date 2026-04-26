@@ -25,7 +25,4 @@ export async function login(req, res) {
     } else {
         res.status(401).send({ message: "Unauthorized user." })
     }
-
-
-
 }
