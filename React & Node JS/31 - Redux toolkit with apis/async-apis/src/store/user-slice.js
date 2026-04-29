@@ -12,21 +12,30 @@ export const fetchUser = createAsyncThunk(
 )
 
 export const fetchUserById = createAsyncThunk('users/fetchUserById',
-    async (userId) => {
-
-        return getUserById(userId);
+    async (userId, { dispatch, getState, rejectWithValue }) => {
+        try {
+            // posts
+            // post => disptach(fetchUserById(post.user.id))
+            console.log(getState())
+            return getUserById(userId);
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message)
+        }
     }
 )
 
 export const fetchUserByIdReject = createAsyncThunk('users/fetchUserByIdReject',
-    async (userId) => {
+    async (userId, { rejectWithValue }) => {
 
         // return getUserById(userId);
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                reject("timeout")
-            }, 3000);
-        })
+        // return new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //         return rejectWithValue("timeout")
+        //         reject("timeout")
+        //     }, 3000);
+        // })
+
+        return rejectWithValue("timeout")
     }
 )
 
@@ -73,7 +82,7 @@ const userSlice = createSlice({
             state.data = null;
         }).addCase(fetchUserByIdReject.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.error.message;
+            state.error = action.error.message || action.payload;
             state.data = null;
         })
     }
