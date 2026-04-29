@@ -9,9 +9,25 @@ export const userApi = createApi({
         fetchUserById: builder.query({
             query: (userId) => `/users/${userId}`,
         }),
+        searchUserByName: builder.query({
+            query: (name) => `users/search?q=${name}`,
+            transformResponse: (response, meta, arg) => {
+                console.log(response)
+                return response.users;
+            },
+        }),
+        addUser: builder.mutation({
+            query(body) {
+                return {
+                    url: 'users/add',
+                    method: 'POST',
+                    body
+                }
+            }
+        })
     }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchUserByIdQuery } = userApi
+export const { useFetchUserByIdQuery, useSearchUserByNameQuery, useLazySearchUserByNameQuery, useAddUserMutation } = userApi
