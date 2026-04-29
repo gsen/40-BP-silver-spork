@@ -1,11 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser, fetchUserById, reset, fetchUserByIdReject } from "../store/user-slice";
+import { useFetchUserByIdQuery } from "../api/service/users";
 
 export default function User() {
   const userState = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-
   function handleClick() {
     dispatch(fetchUser());
   }
