@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { cn } from "@lib/utils";
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@components/ui/field";
-import { Input } from "@components/ui/input";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
-import { login } from "@api/auth-service";
+import { login } from "@/api/auth-service";
 import { useDispatch } from "react-redux";
-import { login as loginAction } from "@store/slices/auth-slice";
+import { login as loginAction } from "@/store/slices/auth-slice";
 
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();

@@ -28,7 +28,6 @@ function hashPassword(password) {
 export async function authenticateUser(credentials) {
     const { email, password } = credentials;
     const existingUser = await User.findOne({ email });
-    console.log(existingUser)
     if (!existingUser) {
         return { error: 'Invalid username or password!' };
     }

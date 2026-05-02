@@ -2,14 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./hooks/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@ui/*": ["./src/components/ui/*"],
-      "@utils": ["./src/lib/utils"],
-      "@api/*": ["./src/api/*"],
-      "@store/*": ["./src/store/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src", "src/components", "src/lib", "hooks", "vite.config.js"]

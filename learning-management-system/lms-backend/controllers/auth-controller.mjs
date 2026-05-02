@@ -18,11 +18,11 @@ export async function registerUser(req, res) {
 
 export async function login(req, res) {
 
-    const { user, token } = await authenticateUser(req.body);
+    const { error, user, token } = await authenticateUser(req.body);
     if (token) {
         res.cookie('token', token, COOKIE_OPTIONS);
         res.send(user);
     } else {
-        res.status(401).send({ message: "Unauthorized user." })
+        res.status(401).send({ message: error ?? "Unauthorized user!" })
     }
 }
