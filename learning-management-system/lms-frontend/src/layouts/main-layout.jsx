@@ -2,6 +2,7 @@ import { Link, Outlet } from "react-router";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button-variants";
 import Header from "@/components/ui/header";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function MainLayout() {
   return (
@@ -9,6 +10,7 @@ export default function MainLayout() {
       <Header />
       <main className="mx-auto w-full max-w-6xl px-4 py-8">
         <Outlet />
+        <Toaster />
       </main>
     </div>
   );

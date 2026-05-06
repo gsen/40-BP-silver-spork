@@ -1,4 +1,4 @@
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+export const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 export function setImagePath(path) {
     if (path) {

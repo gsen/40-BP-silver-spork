@@ -1,8 +1,11 @@
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import ReactPlayer from "react-player";
 
 export default function CoursePlayerPage() {
   const { courseId } = useParams();
+  const [searchParams] = useSearchParams();
+  console.log("Selected lecture ID:", searchParams.get("lectureId"));
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
@@ -12,8 +15,12 @@ export default function CoursePlayerPage() {
           <CardDescription>Watching course {courseId}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid aspect-video place-items-center rounded-lg bg-muted text-sm text-muted-foreground">
-            Video player
+          <div className="grid aspect-video place-items-center rounded-2xl bg-muted text-sm text-muted-foreground overflow-hidden">
+            {/* <video controls className="w-full h-full">
+              <source src={"https://youtu.be/ghizFgNl1LY?si=yoFZKNopB_smQ0zC"} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video> */}
+            <ReactPlayer src={"https://youtu.be/ghizFgNl1LY?si=yoFZKNopB_smQ0zC"} controls width="100%" height="100%" />
           </div>
         </CardContent>
       </Card>
