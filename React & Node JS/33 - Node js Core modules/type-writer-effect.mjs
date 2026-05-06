@@ -13,9 +13,10 @@ function readFileUsingStreaming() {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     async function typeText(text) {
-        for (const char of text) {
-            process.stdout.write(char);
-            await delay(1);
+        const words = text.split(" ");
+        for (const word of words) {
+            process.stdout.write(word + " ");
+            await delay(100);
         }
     }
 
