@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readFile } from "node:fs";
+import { readFile as readFileAsync } from "node:fs/promises";
 import { resolve } from "node:path";
 
 function main() {
@@ -15,4 +16,24 @@ function main() {
     console.log(contents);
 }
 
+function readContents() {
+    console.log("called from readContents")
+    readFile(new URL("./package.json", import.meta.url), "utf-8", (err, data) => {
+        if (err) {
+            console.log("Error reading file", err);
+            return;
+        }
+        console.log(data);
+    })
+}
+
+async function readContentsAsync() {
+    const contents = await readFileAsync(new URL("./package.json", import.meta.url), "utf-8");
+    console.log("from async read")
+    console.log(contents);
+}
+
 main();
+
+readContents();
+readContentsAsync();
