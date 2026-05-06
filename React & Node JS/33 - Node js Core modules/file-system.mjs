@@ -1,5 +1,5 @@
-import { readFileSync, readFile } from "node:fs";
-import { readFile as readFileAsync } from "node:fs/promises";
+import { readFileSync, readFile, write } from "node:fs";
+import { readFile as readFileAsync, writeFile, appendFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 function main() {
@@ -33,7 +33,35 @@ async function readContentsAsync() {
     console.log(contents);
 }
 
+async function createFile() {
+    const contents = "hello world accio!";
+
+    await writeFile("output.text", contents, "utf-8");
+    const user = { name: "gaurav", age: 21 };
+    await writeFile("user.json", JSON.stringify(user), "utf-8");
+    console.log("output.txt created successfully!")
+}
+
+function writeLogs(logContent) {
+    return appendFile("logs.text", logContent, "utf-8");
+}
+
+
+
 main();
 
 readContents();
 readContentsAsync();
+
+createFile();
+
+writeLogs("learning append functionality").then(() => {
+    console.log("file written to logs.txt")
+})
+writeLogs("\nwriting new line 2").then(() => {
+    console.log("file written to logs.txt")
+})
+
+// writeLogs("writing new log line").then(() => {
+//     console.log("file written to logs.txt")
+// })
