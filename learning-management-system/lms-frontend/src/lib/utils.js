@@ -1,3 +1,4 @@
+import { backendURL } from "@/api/api";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
 
@@ -12,4 +13,11 @@ export function getInstructorName(instructor) {
 
   const fullName = [instructor.firstName, instructor.lastName].filter(Boolean).join(" ");
   return fullName || instructor.email || "Instructor";
+}
+
+export function createImageUrl(imageURL) {
+  if (imageURL) {
+    return `${backendURL}/${imageURL}`;
+  }
+  return null;
 }

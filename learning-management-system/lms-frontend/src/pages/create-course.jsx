@@ -3,28 +3,42 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateCourseMutation } from "@/store/services/course-service";
+import { useCreateCourseMutation, useUploadThumbnailMutation } from "@/store/services/course-service";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import FileUpload from "@/components/ui/course/file-upload";
+import { useRef } from "react";
 
 export default function CreateCoursePage() {
   const navigate = useNavigate();
   const [createCourse, { isLoading }] = useCreateCourseMutation();
-  const inputRef = useRef(null);
+  const [uploadThumbnail] = useUploadThumbnailMutation();
+  const fileRef = useRef(null);
+
+  function getFileData() {
+    const formData = new FormData();
+    formData.append("thumbnail", fileRef.current);
+    return formData;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-
     try {
-      const course = await createCourse({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        thumbnail: formData.get("thumbnail"),
-      }).unwrap();
-      toast.success("Course created.", { position: "bottom-center" });
-      navigate(`/courses/${course._id}`);
+      const thumbnailFile = getFileData();
+      const { msg, thumbnailUrl } = await uploadThumbnail(thumbnailFile).unwrap();
+      if (thumbnailUrl) {
+        const course = await createCourse({
+          title: formData.get("title"),
+          description: formData.get("description"),
+          thumbnail: thumbnailUrl,
+        }).unwrap();
+        toast.success("Course created.", { position: "bottom-center" });
+        navigate(`/courses/${course._id}`);
+      } else {
+        toast.error("Thumbnail upload failed. Please try again.", { position: "bottom-center" });
+      }
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Unable to create course."), { position: "bottom-center" });
     }
@@ -55,11 +69,10 @@ export default function CreateCoursePage() {
                 description="Upload a thumbnail image for your course."
                 buttonText="Choose File"
                 onFileSelect={(file) => {
-                  inputRef.current.files = [file];
+                  fileRef.current = file;
                   // Handle the selected file, e.g., update state or upload to server
                 }}
               />
-              <input ref={inputRef} className="hidden" type="file" name="thumbnail" id="thumbnail" />
               {/* <Input id="thumbnail" name="thumbnail" placeholder="https://example.com/course.jpg" /> */}
             </Field>
           </FieldGroup>

@@ -46,6 +46,13 @@ export const courseAPI = createApi({
       }),
       invalidatesTags: [{ type: "Courses", id: "LIST" }],
     }),
+    uploadThumbnail: builder.mutation({
+      query: (formData) => ({
+        url: '/courses/thumbnail',
+        method: 'POST',
+        body: formData
+      })
+    })
   }),
 });
 
@@ -55,6 +62,7 @@ export const {
   useFetchAllCoursesQuery,
   useFetchCourseByIdQuery,
   useUpdateCourseMutation,
+  useUploadThumbnailMutation
 } = courseAPI;
 
 export default courseAPI;

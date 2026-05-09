@@ -5,6 +5,7 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchAllCoursesQuery } from "@/store/services/course-service";
 import { getApiErrorMessage, isUserCourseOwner } from "@/lib/api-error";
+import { createImageUrl } from "@/lib/utils";
 
 export default function InstructorDashboardPage() {
   const { user } = useSelector((state) => state.auth);
@@ -83,9 +84,9 @@ export default function InstructorDashboardPage() {
             instructorCourses.slice(0, 4).map((course) => (
               <div key={course._id} className="grid gap-3 rounded-2xl border p-3">
                 <img
-                  src={course.thumbnail || "https://avatar.vercel.sh/course"}
+                  src={createImageUrl(course.thumbnail) || "https://avatar.vercel.sh/course"}
                   alt=""
-                  className="aspect-video w-full rounded-2xl object-cover"
+                  className="aspect-auto w-full rounded-2xl object-fit"
                 />
                 <div className="grid gap-1">
                   <h2 className="font-medium">{course.title}</h2>
