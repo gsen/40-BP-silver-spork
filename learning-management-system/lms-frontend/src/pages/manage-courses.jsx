@@ -241,6 +241,13 @@ export default function ManageCoursesPage() {
                 <Field>
                   <FieldLabel htmlFor="edit-thumbnail">Thumbnail URL</FieldLabel>
                   <Input id="edit-thumbnail" name="thumbnail" defaultValue={editingCourse.thumbnail || ""} />
+                  {/* <FileUpload
+                    id="edit-thumbnail"
+                    name="thumbnail"
+                    title="Course thumbnail"
+                    description="Upload an image to represent your course in the catalog."
+                    buttonText="Change thumbnail"
+                  /> */}
                 </Field>
               </FieldGroup>
               <DialogFooter>

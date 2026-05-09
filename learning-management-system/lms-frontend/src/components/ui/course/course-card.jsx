@@ -9,8 +9,8 @@ export function CourseCard({ course }) {
     <Card className="relative mx-auto w-full max-w-sm pt-0">
       <div className="absolute inset-0 z-30 aspect-video bg-black/10" />
       <img
-        src={createImageUrl(course.thumbnail) || "https://avatar.vercel.sh/shadcn1"}
-        alt="Event cover"
+        src={createImageUrl(course.thumbnail)}
+        alt="Course thumbnail"
         className="relative z-20 aspect-video w-full object-fit"
       />
       <CardHeader>

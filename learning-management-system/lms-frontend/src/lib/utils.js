@@ -16,8 +16,8 @@ export function getInstructorName(instructor) {
 }
 
 export function createImageUrl(imageURL) {
-  if (imageURL) {
+  if (imageURL && imageURL.includes("uploads")) {
     return `${backendURL}/${imageURL}`;
   }
-  return null;
+  return "https://avatar.vercel.sh/shadcn1";
 }
