@@ -19,11 +19,6 @@ router.post("/", verifyToken, createCourse);
 router.patch("/:id", verifyToken, updateCourse);
 router.delete("/:id", verifyToken, deleteCourse);
 router.post("/:id/lectures", verifyToken, addLectureToCourse);
-router.post("/thumbnail", (req, res, next) => {
-    console.log("thumbnail")
-    console.log(req)
-    next();
-
-}, handleUpload, thumbnailImage);
+router.post("/thumbnail", handleUpload, thumbnailImage);
 
 export default router;
