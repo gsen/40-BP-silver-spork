@@ -7,11 +7,12 @@ import { useCreateCourseMutation } from "@/store/services/course-service";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import FileUpload from "@/components/ui/course/file-upload";
 
 export default function CreateCoursePage() {
   const navigate = useNavigate();
   const [createCourse, { isLoading }] = useCreateCourseMutation();
-
+  const inputRef = useRef(null);
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -48,7 +49,18 @@ export default function CreateCoursePage() {
             </Field>
             <Field>
               <FieldLabel htmlFor="thumbnail">Thumbnail</FieldLabel>
-              <Input id="thumbnail" name="thumbnail" placeholder="https://example.com/course.jpg" />
+
+              <FileUpload
+                title="Upload thumbnail"
+                description="Upload a thumbnail image for your course."
+                buttonText="Choose File"
+                onFileSelect={(file) => {
+                  inputRef.current.files = [file];
+                  // Handle the selected file, e.g., update state or upload to server
+                }}
+              />
+              <input ref={inputRef} className="hidden" type="file" name="thumbnail" id="thumbnail" />
+              {/* <Input id="thumbnail" name="thumbnail" placeholder="https://example.com/course.jpg" /> */}
             </Field>
           </FieldGroup>
           <Button type="submit" className="w-fit" disabled={isLoading}>
