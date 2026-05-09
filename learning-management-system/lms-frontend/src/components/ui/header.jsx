@@ -8,10 +8,12 @@ const navigation = [
   { to: "/", label: "Home" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/my-courses", label: "My Courses" },
-  { to: "/instructor", label: "Instructor" },
+  { to: "/instructor", label: "Instructor", roles: ["instructor"] },
 ];
 export default function Header() {
   const { user } = useSelector((state) => state.auth);
+  const visibleNavigation = navigation.filter((item) => !item.roles || item.roles.includes(user?.role));
+
   return (
     <header className="border-b bg-card">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4">
@@ -19,7 +21,7 @@ export default function Header() {
           LMS
         </Link>
         <nav className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          {navigation.map((item) => (
+          {visibleNavigation.map((item) => (
             <Link key={item.to} to={item.to} className="transition-colors hover:text-foreground">
               {item.label}
             </Link>

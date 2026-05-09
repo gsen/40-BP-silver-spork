@@ -19,8 +19,10 @@ async function findManageableCourse(user, courseId) {
     return { course };
 }
 
-export async function fetchLectures() {
-    return Lecture.find()
+export async function fetchLectures(courseId) {
+    const filter = courseId ? { course: courseId } : {};
+
+    return Lecture.find(filter)
         .populate("course", "title")
         .sort({ createdAt: -1 });
 }

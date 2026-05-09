@@ -1,36 +1,37 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
-import { login } from "@/api/auth-service";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "@/store/slices/auth-slice";
+import { useLoginMutation } from "@/store/services/auth-service";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { toast } from "sonner";
+import { resetApiState } from "@/store/reset-api-state";
 
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setErrorMessage("");
-    setIsSubmitting(true);
 
     try {
       const formData = new FormData(e.currentTarget);
-      const result = await login(formData.get("email"), formData.get("password"));
+      const result = await login({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }).unwrap();
 
+      resetApiState(dispatch);
       dispatch(loginAction(result));
-      navigate("/");
+      toast.success("Welcome back.", { position: "bottom-center" });
+      navigate(result.role === "instructor" ? "/instructor" : "/dashboard");
     } catch (error) {
-      console.error("Login failed:", error);
-      setErrorMessage(error.message || "Login failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      toast.error(getApiErrorMessage(error, "Login failed. Please try again."), { position: "bottom-center" });
     }
   }
 
@@ -57,10 +58,9 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Input id="password" name="password" type="password" required />
               </Field>
-              {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
               <Field>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Logging in..." : "Login"}
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <Link to="/auth/signup">Sign up</Link>

@@ -26,3 +26,13 @@ export async function login(req, res) {
         res.status(401).send({ message: error ?? "Unauthorized user!" })
     }
 }
+
+export async function logout(req, res) {
+    res.clearCookie("token", COOKIE_OPTIONS);
+    res.json({ message: "Logged out" });
+}
+
+export async function me(req, res) {
+    const { email, firstName, lastName, id, role } = req.user;
+    res.json({ email, firstName, lastName, id, role });
+}

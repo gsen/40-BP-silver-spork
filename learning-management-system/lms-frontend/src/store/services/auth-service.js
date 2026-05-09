@@ -1,32 +1,40 @@
 // Need to use the React-specific entry point to import createApi
-import { backendURL } from '@/api/api';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { backendURL } from "@/api/api";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define a service using a base URL and expected endpoints
-
-const ENDPOINTS = {
-    REGISTER: '/register'
-}
-
-const baseURL = `${backendURL}/api/auth`
 export const authApi = createApi({
-    reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ baseUrl: baseURL }),
-    endpoints: (builder) => ({
-        registerUser: builder.mutation({
-            query(body) {
-                return {
-                    url: ENDPOINTS.REGISTER,
-                    method: 'POST',
-                    body
-                }
-            }
-        })
+  reducerPath: "authApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${backendURL}/api/auth`,
+    credentials: "include",
+  }),
+  endpoints: (builder) => ({
+    currentUser: builder.query({
+      query: () => "/me",
     }),
-})
+    registerUser: builder.mutation({
+      query: (body) => ({
+        url: "/register",
+        method: "POST",
+        body,
+      }),
+    }),
+    login: builder.mutation({
+      query: (body) => ({
+        url: "/login",
+        method: "POST",
+        body,
+      }),
+    }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+    }),
+  }),
+});
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useRegisterUserMutation } = authApi
+export const { useCurrentUserQuery, useLoginMutation, useLogoutUserMutation, useRegisterUserMutation } = authApi;
 
 export default authApi;

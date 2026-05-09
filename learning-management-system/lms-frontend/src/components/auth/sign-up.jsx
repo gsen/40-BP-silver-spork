@@ -5,16 +5,22 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router";
 import { Switch } from "@/components/ui/switch";
-import { useRegisterUserMutation } from "@/store/services/auth-service";
+import { useLoginMutation, useRegisterUserMutation } from "@/store/services/auth-service";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { login as loginAction } from "@/store/slices/auth-slice";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { resetApiState } from "@/store/reset-api-state";
 
 export function SignupForm({ className, ...props }) {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  function handleRegistration(event) {
+  async function handleRegistration(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const firstName = formData.get("firstName");
@@ -29,31 +35,18 @@ export function SignupForm({ className, ...props }) {
       return;
     }
 
-    toast.promise(
-      () => {
-        return new Promise((resolve, reject) => {
-          registerUser({ firstName, lastName, email, password, role })
-            .unwrap()
-            .then((payload) => {
-              resolve(payload);
-            })
-            .catch((err) => {
-              reject(err);
-            });
-        });
-      },
-      {
-        loading: "Creating your account...",
-        success: (payload) => {
-          setTimeout(() => {
-            navigate("/auth");
-          }, 800);
-          return "Account created successfully! Redirecting to login...";
-        },
-        error: (err) => err.data?.message || "Failed to create account. Please try again.",
+    try {
+      await registerUser({ firstName, lastName, email, password, role }).unwrap();
+      const user = await login({ email, password }).unwrap();
+      resetApiState(dispatch);
+      dispatch(loginAction(user));
+      toast.success("Account created.", { position: "bottom-center" });
+      navigate(role === "instructor" ? "/instructor" : "/dashboard");
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to create account. Please try again."), {
         position: "bottom-center",
-      },
-    );
+      });
+    }
   }
 
   return (
@@ -98,7 +91,9 @@ export function SignupForm({ className, ...props }) {
                 <FieldDescription>Must be at least 8 characters long.</FieldDescription>
               </Field>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button type="submit" disabled={isLoading || isLoggingIn}>
+                  {isLoading || isLoggingIn ? "Creating..." : "Create Account"}
+                </Button>
                 <FieldDescription className="text-center">
                   Already have an account? <Link to="/auth">Login</Link>
                 </FieldDescription>

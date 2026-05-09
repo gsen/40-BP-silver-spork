@@ -1,6 +1,4 @@
-import { Link, Outlet } from "react-router";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { Outlet } from "react-router";
 import Header from "@/components/ui/header";
 import { Toaster } from "@/components/ui/sonner";
 

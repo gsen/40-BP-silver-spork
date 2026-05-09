@@ -8,8 +8,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { logout } from "@/store/slices/auth-slice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { useLogoutUserMutation } from "@/store/services/auth-service";
+import { resetApiState } from "@/store/reset-api-state";
 
 export default function UserDropdown({ user }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [logoutUser] = useLogoutUserMutation();
+
+  async function handleLogout() {
+    try {
+      await logoutUser().unwrap();
+    } catch {
+      // Local logout still keeps the UI safe if the session has already expired.
+    }
+    resetApiState(dispatch);
+    dispatch(logout());
+    navigate("/auth");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button variant="outline" />}>
@@ -23,7 +43,7 @@ export default function UserDropdown({ user }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

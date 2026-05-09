@@ -20,7 +20,7 @@ export function CourseCard({ course }) {
         <CardTitle>{course.title}</CardTitle>
 
         <CardDescription>{getInstructorName(course.instructor)}</CardDescription>
-        <CardDescription>{course.description}</CardDescription>
+        <CardDescription className="line-clamp-2">{course.description}</CardDescription>
       </CardHeader>
       <CardFooter>
         <Link to={`/courses/${course._id}`} className="w-full">

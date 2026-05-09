@@ -32,7 +32,7 @@ export function LectureTable({ lectures }) {
       </TableHeader>
       <TableBody>
         {lectures.map((lecture) => (
-          <TableRow key={lecture.id}>
+          <TableRow key={lecture._id}>
             <TableCell className="font-medium">{lecture.title}</TableCell>
             <TableCell>{lecture.description}</TableCell>
             <TableCell className="text-right">

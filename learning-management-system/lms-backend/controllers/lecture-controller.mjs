@@ -8,7 +8,7 @@ import {
 
 export async function getLectures(req, res) {
     try {
-        const lectures = await fetchLectures();
+        const lectures = await fetchLectures(req.query.course);
         res.json(lectures);
     } catch (ex) {
         res.status(500).json({ message: "Unable to fetch lectures", error: ex.message });
