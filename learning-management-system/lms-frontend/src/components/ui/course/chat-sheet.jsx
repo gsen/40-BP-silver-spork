@@ -19,7 +19,7 @@ export default function SheetSide() {
   function onNewMessage(message) {
     // Here you would typically send the message to your backend or AI service and get a response
     console.log("New message:", message);
-    setMessages((prevMessages) => [...prevMessages, { text: message, sender: "user" }]);
+    setMessages((prevMessages) => [...prevMessages, { text: message, sender: "ai" }]);
   }
   return (
     <div className="flex flex-wrap gap-2">

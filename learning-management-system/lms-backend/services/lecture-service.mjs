@@ -5,6 +5,7 @@ import { fetchTranscript } from "youtube-transcript"
 import { GoogleGenAI } from "@google/genai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText, streamText } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 function canManageCourse(user, course) {
     return user?.role === "instructor" && course.instructor.toString() === user.id;
@@ -32,6 +33,12 @@ const ai = new GoogleGenAI({
 const google = createGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_API_KEY,
 
+})
+
+const openAI = createOpenAI({
+    // http://localhost:11434/v1
+    baseURL: process.env.OLLAMA_API_URL,
+    apiKey: "ollama"
 })
 
 async function summarize(content) {
@@ -80,6 +87,18 @@ export async function fetchLectures(courseId) {
     }))
 }
 
+export async function summary_ollama(content) {
+    return streamText({
+        model: openAI('llama3.2:3b'),
+        system:
+            `You are an expert mern stack instructor` +
+            `you are teaching students in a bootcamp`
+            + `you are going to give a summary on the transcript of the provided lecture`
+            + `Give response in markdown format.`,
+        prompt: `please summarize the lecture transcript provided \n` + content
+    });
+}
+
 export async function summarizeLecture(id) {
     const lecture = await Lecture.findById(id);
     const transcripts = await fetchTranscript(lecture.videoUrl);
@@ -87,7 +106,7 @@ export async function summarizeLecture(id) {
     const transcript = transcripts.reduce((prev, current) => ({ text: prev.text + ' ' + current.text, duration: prev.duration + current.duration }));
     console.log('Transcript object:', transcript);
     console.log('Transcript text:', transcript.text, typeof transcript.text);
-    return summarize_v3(transcript.text)
+    return summary_ollama(transcript.text)
 }
 
 export async function fetchLectureById(id) {
