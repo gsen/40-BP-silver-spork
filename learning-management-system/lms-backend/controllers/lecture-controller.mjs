@@ -3,12 +3,14 @@ import {
     editLecture,
     fetchLectureById,
     fetchLectures,
-    removeLecture
+    removeLecture,
+    summarizeLecture as summarize
 } from "../services/lecture-service.mjs";
 
 export async function getLectures(req, res) {
     try {
         const lectures = await fetchLectures(req.query.course);
+        // console.log(lectures)
         res.json(lectures);
     } catch (ex) {
         res.status(500).json({ message: "Unable to fetch lectures", error: ex.message });
@@ -26,6 +28,37 @@ export async function getLectureById(req, res) {
         res.json(lecture);
     } catch (ex) {
         res.status(500).json({ message: "Unable to fetch lecture", error: ex.message });
+    }
+}
+
+export async function summarizeLecture(req, res) {
+    try {
+        const result = await summarize(req.params.id);
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        const reader = result.textStream.getReader();
+        const pump = async () => {
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        res.end();
+                        break;
+                    }
+                    res.write(value);
+                }
+            } catch (error) {
+                if (!res.headersSent) {
+                    res.status(500).json({ message: "Unable to summarize lecture", error: error.message });
+                }
+            }
+        };
+        pump();
+    } catch (error) {
+        if (!res.headersSent) {
+            res.status(500).json({ message: "Unable to summarize lecture", error: error.message });
+        }
     }
 }
 

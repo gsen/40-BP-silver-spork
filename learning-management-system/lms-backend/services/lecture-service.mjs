@@ -1,5 +1,10 @@
+import { text } from "express";
 import Course from "../models/course.mjs";
 import Lecture from "../models/lecture.mjs";
+import { fetchTranscript } from "youtube-transcript"
+import { GoogleGenAI } from "@google/genai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { generateText, streamText } from "ai";
 
 function canManageCourse(user, course) {
     return user?.role === "instructor" && course.instructor.toString() === user.id;
@@ -19,12 +24,70 @@ async function findManageableCourse(user, courseId) {
     return { course };
 }
 
+
+const ai = new GoogleGenAI({
+    apiKey: process.env.GOOGLE_API_KEY
+});
+
+const google = createGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+
+})
+
+async function summarize(content) {
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-lite",
+        contents: `
+        can you give key takeaways for this
+        ${content}
+        `,
+        config: {
+            systemInstruction: "You are a software engineer who specializes in mern stack",
+        }
+    });
+    console.log(response.text);
+    return response.text;
+}
+
+async function summarize_v2(content) {
+    const { text } = await generateText({
+        model: google('gemini-2.5-flash-lite'),
+        prompt: content
+    });
+    return text;
+}
+function summarize_v3(content) {
+    return streamText({
+        model: google('gemini-2.5-flash-lite'),
+        messages: [{
+            role: "user", content: `Can you give key takeaways for this lecture transcript? ${content}`,
+        }]
+    });
+}
+
+
+
 export async function fetchLectures(courseId) {
     const filter = courseId ? { course: courseId } : {};
 
-    return Lecture.find(filter)
-        .populate("course", "title")
-        .sort({ createdAt: -1 });
+    let lectures = await Lecture.find(filter).populate("course", "title")
+        .sort({ createdAt: 1 })
+    return Promise.all(lectures.map(async (lec) => {
+        const transcripts = await fetchTranscript(lec.videoUrl);
+        const transcript = transcripts.reduce((prev, current) => ({ text: prev.text + ' ' + current.text }));
+        // const summary = await summarize_v2(transcript.text)
+        return { ...lec.toObject(), transcript }
+    }))
+}
+
+export async function summarizeLecture(id) {
+    const lecture = await Lecture.findById(id);
+    const transcripts = await fetchTranscript(lecture.videoUrl);
+    console.log('Transcripts:', transcripts);
+    const transcript = transcripts.reduce((prev, current) => ({ text: prev.text + ' ' + current.text, duration: prev.duration + current.duration }));
+    console.log('Transcript object:', transcript);
+    console.log('Transcript text:', transcript.text, typeof transcript.text);
+    return summarize_v3(transcript.text)
 }
 
 export async function fetchLectureById(id) {
