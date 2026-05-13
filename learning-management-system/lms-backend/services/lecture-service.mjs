@@ -91,9 +91,10 @@ export async function summary_ollama(content) {
     return streamText({
         model: openAI('llama3.2:3b'),
         system:
-            `You are an expert mern stack instructor` +
-            `you are teaching students in a bootcamp`
-            + `you are going to give a summary on the transcript of the provided lecture`
+            `You are an expert mern stack instructor.` +
+            `you are teaching students in a bootcamp.`
+            + `you are going to give a summary on the transcript of the provided lecture.`
+            + `give topic wise summary in markdown format`
             + `Give response in markdown format.`,
         prompt: `please summarize the lecture transcript provided \n` + content
     });

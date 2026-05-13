@@ -9,6 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { IconSparkle } from "@tabler/icons-react";
+
 import { useState } from "react";
 
 import Chat from "@/components/ui/course/chat";
@@ -28,6 +30,7 @@ export default function SheetSide() {
           render={
             <Button variant="outline" className="capitalize">
               Open Chat
+              <IconSparkle />
             </Button>
           }
         />

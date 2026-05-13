@@ -16,6 +16,7 @@ import ChatSheet from "@/components/ui/course/chat-sheet";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { backendURL } from "@/api/api";
+import { IconSparkle } from "@tabler/icons-react";
 export default function CoursePlayerPage() {
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
@@ -84,11 +85,13 @@ export default function CoursePlayerPage() {
 
         const chunk = decoder.decode(value);
         fullSummary += chunk;
+        setSummary(fullSummary);
+        containerRef.current?.lastElementChild?.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }
 
       console.log("Full summary received:", fullSummary, typeof fullSummary);
       console.log("Setting summary to:", String(fullSummary));
-      setSummary(String(fullSummary));
+      setSummary(fullSummary);
     } catch (error) {
       console.error("Error summarizing lecture:", error);
       toast.error("Failed to summarize lecture", { position: "bottom-center" });
@@ -153,6 +156,7 @@ export default function CoursePlayerPage() {
                     <ProgressValue>{enrollment.progress || 0}%</ProgressValue>
                   </Progress>
                   <Button
+                    className={"w-fit"}
                     onClick={handleCompleteLecture}
                     disabled={!currentLecture || isCurrentComplete || isCompleting}
                   >
@@ -167,8 +171,9 @@ export default function CoursePlayerPage() {
                     </p>
                   </section>
                 )}
-                <Button onClick={summarizeLecture} disabled={!currentLecture || isSummarizing}>
+                <Button className={"w-fit"} onClick={summarizeLecture} disabled={!currentLecture || isSummarizing}>
                   {isSummarizing ? "Summarizing..." : "Summarize lecture"}
+                  <IconSparkle />
                 </Button>
                 {(summary || isSummarizing) && (
                   <section className="grid gap-2 border-t pt-4" aria-label="Lecture summary">
@@ -192,12 +197,12 @@ export default function CoursePlayerPage() {
               </section>
             )}
           </CardContent>
-          <CardFooter>
-            <section className="grid gap-2 border-t pt-4" aria-label="Lecture transcript">
+          <CardFooter className="flex flex-col items-start gap-4">
+            <section className="w-full border-t pt-4 grid gap-4" aria-label="Lecture transcript">
               <h3 className="font-semibold text-sm">Ask AI</h3>
               <ChatSheet />
             </section>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground self-center">
               {currentIndex + 1} of {lectures.length} lectures
             </p>
           </CardFooter>
