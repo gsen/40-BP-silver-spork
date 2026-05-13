@@ -8,9 +8,20 @@ const input = readline.createInterface({
 
 const emitter = new EventEmitter();
 
-
-emitter.on("user:subscribed", (user) => {
+function onSubscribe(user) {
     console.log("user subscribed", user.username);
+
+}
+
+emitter.on("user:subscribed", onSubscribe)
+
+
+// emitter.once("user:subscribed", onSubscribe) // runs once and will automatically remove the event listener
+
+// emitter.off("user:subscribed", onSubscribe)
+
+emitter.on("error", (err) => {
+    console.log(err.message)
 })
 
 
@@ -23,6 +34,7 @@ input.question("Do you want to subscribe(y/n)", (value) => {
         })
     } else {
         console.log("user did not subscribe")
+        throw new Error("User didnt subscribe")
     }
 
 });
