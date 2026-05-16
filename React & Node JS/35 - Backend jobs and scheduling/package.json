@@ -11,6 +11,9 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
+    "bull": "^4.16.5",
+    "express": "^5.2.1",
+    "ioredis": "^5.10.1",
     "node-cron": "^4.2.1"
   }
 }
