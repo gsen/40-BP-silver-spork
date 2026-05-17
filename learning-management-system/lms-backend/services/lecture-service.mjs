@@ -107,7 +107,7 @@ export async function summarizeLecture(id) {
     const transcript = transcripts.reduce((prev, current) => ({ text: prev.text + ' ' + current.text, duration: prev.duration + current.duration }));
     console.log('Transcript object:', transcript);
     console.log('Transcript text:', transcript.text, typeof transcript.text);
-    return summary_ollama(transcript.text)
+    return summarize_v3(transcript.text)
 }
 
 export async function fetchLectureById(id) {

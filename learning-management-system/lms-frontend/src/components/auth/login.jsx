@@ -20,13 +20,13 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
 
     try {
+      resetApiState(dispatch);
       const formData = new FormData(e.currentTarget);
       const result = await login({
         email: formData.get("email"),
         password: formData.get("password"),
       }).unwrap();
 
-      resetApiState(dispatch);
       dispatch(loginAction(result));
       toast.success("Welcome back.", { position: "bottom-center" });
       navigate(result.role === "instructor" ? "/instructor" : "/dashboard");
